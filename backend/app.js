@@ -68,6 +68,183 @@ app.get('/test-db', async (req, res) => {
     }
 });
 
+// Dashboard/estadísticas - VERSIÓN MEJORADA
+app.get('/dashboard', async (req, res) => {
+    try {
+        const { executeQuery } = require('./db/connection');
+        
+        // 1. ESTADÍSTICAS PRINCIPALES (más completas)
+        const statsQuery = `
+            SELECT 
+                COUNT(*) as total_inspecciones,
+                COUNT(DISTINCT placa) as vehiculos_unicos,
+                COUNT(DISTINCT nombre_conductor) as conductores_unicos,
+                COUNT(DISTINCT nombre_elabora) as inspectores_activos,
+                DATE_FORMAT(MIN(fecha_inspeccion), '%d/%m/%Y') as primera_inspeccion,
+                DATE_FORMAT(MAX(fecha_inspeccion), '%d/%m/%Y') as ultima_inspeccion,
+                ROUND(AVG(kilometraje), 0) as promedio_kilometraje,
+                SUM(CASE WHEN defecto_frontal = 1 OR defecto_trasero = 1 OR 
+                             defecto_lateral_izq = 1 OR defecto_lateral_der = 1 OR
+                             defecto_techo = 1 OR defecto_interior = 1 OR
+                             defecto_motor = 1 OR defecto_chasis = 1 
+                         THEN 1 ELSE 0 END) as inspecciones_con_defectos,
+                ROUND(AVG(CASE WHEN nivel_refrigerante = 'BUENO' THEN 100 
+                              WHEN nivel_refrigerante = 'MALO' THEN 0 
+                              ELSE 50 END), 1) as promedio_niveles,
+                ROUND(AVG(CASE WHEN luz_principales = 'BUENO' THEN 100 
+                              WHEN luz_principales = 'MALO' THEN 0 
+                              ELSE 50 END), 1) as promedio_luces
+            FROM Inspecciones 
+            WHERE activo = 1
+        `;
+        
+        // 2. INSPECCIONES POR MES (ÚLTIMOS 6 MESES)
+        const porMesQuery = `
+            SELECT 
+                DATE_FORMAT(fecha_inspeccion, '%b %Y') as mes_corto,
+                DATE_FORMAT(fecha_inspeccion, '%Y-%m') as mes,
+                COUNT(*) as total,
+                SUM(CASE WHEN defecto_frontal = 1 OR defecto_trasero = 1 OR 
+                             defecto_lateral_izq = 1 OR defecto_lateral_der = 1 
+                         THEN 1 ELSE 0 END) as con_defectos
+            FROM Inspecciones 
+            WHERE activo = 1 AND fecha_inspeccion >= DATE_SUB(NOW(), INTERVAL 6 MONTH)
+            GROUP BY DATE_FORMAT(fecha_inspeccion, '%Y-%m'), DATE_FORMAT(fecha_inspeccion, '%b %Y')
+            ORDER BY mes ASC
+        `;
+        
+        // 3. TOP 5 VEHÍCULOS MÁS INSPECCIONADOS
+        const topVehiculosQuery = `
+            SELECT 
+                placa,
+                COUNT(*) as inspecciones,
+                MAX(modelo) as modelo,
+                MAX(tipo_vehiculo) as tipo
+            FROM Inspecciones 
+            WHERE activo = 1
+            GROUP BY placa
+            HAVING COUNT(*) > 0
+            ORDER BY inspecciones DESC
+            LIMIT 5
+        `;
+        
+        // 4. DISTRIBUCIÓN POR TIPO DE VEHÍCULO
+        const porTipoQuery = `
+            SELECT 
+                COALESCE(tipo_vehiculo, 'No especificado') as tipo_vehiculo,
+                COUNT(*) as cantidad
+            FROM Inspecciones 
+            WHERE activo = 1
+            GROUP BY tipo_vehiculo
+            ORDER BY cantidad DESC
+            LIMIT 8
+        `;
+        
+        // 5. ESTADO GENERAL DE CHEQUEOS
+        const estadoGeneralQuery = `
+            SELECT 
+                'Buen Estado' as estado,
+                SUM(CASE WHEN nivel_refrigerante = 'BUENO' THEN 1 ELSE 0 END +
+                    CASE WHEN nivel_frenos = 'BUENO' THEN 1 ELSE 0 END +
+                    CASE WHEN nivel_aceite = 'BUENO' THEN 1 ELSE 0 END +
+                    CASE WHEN pedal_acelerador = 'BUENO' THEN 1 ELSE 0 END +
+                    CASE WHEN pedal_freno = 'BUENO' THEN 1 ELSE 0 END +
+                    CASE WHEN luz_principales = 'BUENO' THEN 1 ELSE 0 END +
+                    CASE WHEN luz_stops = 'BUENO' THEN 1 ELSE 0 END) as total
+            FROM Inspecciones 
+            WHERE activo = 1
+            UNION ALL
+            SELECT 
+                'Mal Estado' as estado,
+                SUM(CASE WHEN nivel_refrigerante = 'MALO' THEN 1 ELSE 0 END +
+                    CASE WHEN nivel_frenos = 'MALO' THEN 1 ELSE 0 END +
+                    CASE WHEN nivel_aceite = 'MALO' THEN 1 ELSE 0 END +
+                    CASE WHEN pedal_acelerador = 'MALO' THEN 1 ELSE 0 END +
+                    CASE WHEN pedal_freno = 'MALO' THEN 1 ELSE 0 END +
+                    CASE WHEN luz_principales = 'MALO' THEN 1 ELSE 0 END +
+                    CASE WHEN luz_stops = 'MALO' THEN 1 ELSE 0 END) as total
+            FROM Inspecciones 
+            WHERE activo = 1
+            UNION ALL
+            SELECT 
+                'N/A' as estado,
+                SUM(CASE WHEN nivel_refrigerante = 'NA' THEN 1 ELSE 0 END +
+                    CASE WHEN nivel_frenos = 'NA' THEN 1 ELSE 0 END +
+                    CASE WHEN nivel_aceite = 'NA' THEN 1 ELSE 0 END +
+                    CASE WHEN pedal_acelerador = 'NA' THEN 1 ELSE 0 END +
+                    CASE WHEN pedal_freno = 'NA' THEN 1 ELSE 0 END +
+                    CASE WHEN luz_principales = 'NA' THEN 1 ELSE 0 END +
+                    CASE WHEN luz_stops = 'NA' THEN 1 ELSE 0 END) as total
+            FROM Inspecciones 
+            WHERE activo = 1
+        `;
+        
+        // Ejecutar todas las consultas en paralelo
+        const [
+            statsResult,
+            porMesResult,
+            topVehiculosResult,
+            porTipoResult,
+            estadoGeneralResult
+        ] = await Promise.all([
+            executeQuery(statsQuery),
+            executeQuery(porMesQuery),
+            executeQuery(topVehiculosQuery),
+            executeQuery(porTipoQuery),
+            executeQuery(estadoGeneralQuery)
+        ]);
+        
+        // Calcular porcentaje de inspecciones con defectos
+        const stats = statsResult[0];
+        const porcentajeDefectos = stats.total_inspecciones > 0 
+            ? Math.round((stats.inspecciones_con_defectos / stats.total_inspecciones) * 100) 
+            : 0;
+        
+        // Procesar datos para gráficos
+        const datosParaGraficos = {
+            porMes: {
+                labels: porMesResult.map(item => item.mes_corto),
+                totales: porMesResult.map(item => item.total),
+                defectos: porMesResult.map(item => item.con_defectos)
+            },
+            porTipo: {
+                labels: porTipoResult.map(item => item.tipo_vehiculo),
+                datos: porTipoResult.map(item => item.cantidad)
+            },
+            estadoGeneral: estadoGeneralResult
+        };
+        
+        res.render('dashboard', {
+            title: 'Dashboard de Inspecciones',
+            appName: 'Sistema de Inspección Vehicular',
+            // Estadísticas principales
+            estadisticas: stats,
+            porcentajeDefectos: porcentajeDefectos,
+            // Datos para tablas
+            topVehiculos: topVehiculosResult,
+            porMes: porMesResult,
+            // Datos para gráficos (como JSON)
+            datosGraficos: JSON.stringify(datosParaGraficos),
+            // Fecha actual para el dashboard
+            fechaActual: new Date().toLocaleDateString('es-ES', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            })
+        });
+        
+    } catch (error) {
+        console.error('❌ Error al cargar dashboard:', error);
+        res.render('error', {
+            title: 'Error',
+            message: 'No se pudo cargar el dashboard',
+            error: process.env.NODE_ENV === 'development' ? error : {}
+        });
+    }
+});
+
+
 // ============================================
 // RUTA PARA PROCESAR Y GUARDAR INSPECCIÓN
 // ============================================

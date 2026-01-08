@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title><%= title %> - <%= appName %></title>
+    <style>
+        /* RESET Y BASE */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 15px;
+            color: #333;
+        }
+        
+        /* CONTAINER PRINCIPAL */
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        /* HEADER DEL DASHBOARD */
+        .dashboard-header {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .header-title h1 {
+            font-size: 1.8rem;
+            color: #2c3e50;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .header-title p {
+            color: #666;
+            font-size: 0.95rem;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        /* BOTONES */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+        
+        .btn-success {
+            background: #27ae60;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #219653;
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+        
+        /* ESTADÍSTICAS PRINCIPALES */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        @media (min-width: 768px) {
+            .stats-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+        
+        @media (min-width: 1200px) {
+            .stats-grid {
+                grid-template-columns: repeat(6, 1fr);
+            }
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s;
+            border-top: 4px solid #3498db;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stat-card.good {
+            border-top-color: #27ae60;
+        }
+        
+        .stat-card.warning {
+            border-top-color: #f39c12;
+        }
+        
+        .stat-card.danger {
+            border-top-color: #e74c3c;
+        }
+        
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+        
+        .stat-card .stat-icon {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+        }
+        
+        .stat-card.good .stat-icon {
+            background: linear-gradient(135deg, #27ae60, #219653);
+        }
+        
+        .stat-card.warning .stat-icon {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+        }
+        
+        .stat-card.danger .stat-icon {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 0.85rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .stat-subtext {
+            font-size: 0.75rem;
+            color: #999;
+            margin-top: 5px;
+        }
+        
+        /* SECCIONES DEL DASHBOARD */
+        .dashboard-section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f2f5;
+        }
+        
+        .section-header h2 {
+            font-size: 1.4rem;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        /* GRÁFICOS */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        
+        @media (min-width: 992px) {
+            .charts-grid {
+                grid-template-columns: 2fr 1fr;
+            }
+        }
+        
+        .chart-container {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .chart-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        canvas {
+            width: 100% !important;
+            height: 300px !important;
+        }
+        
+        /* TABLAS */
+        .table-responsive {
+            overflow-x: auto;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+        }
+        
+        .table th {
+            background: #f8f9fa;
+            color: #495057;
+            padding: 12px 15px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 14px;
+            border-bottom: 2px solid #dee2e6;
+        }
+        
+        .table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e9ecef;
+            font-size: 14px;
+        }
+        
+        .table tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .badge-success {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .badge-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .badge-danger {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        /* PROGRESS BARS */
+        .progress-container {
+            margin: 20px 0;
+        }
+        
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        
+        .progress-bar {
+            height: 10px;
+            background: #e9ecef;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3498db, #2ecc71);
+            border-radius: 5px;
+            transition: width 0.5s ease-in-out;
+        }
+        
+        /* FOOTER */
+        .dashboard-footer {
+            text-align: center;
+            padding: 20px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+            margin-top: 30px;
+        }
+        
+        .dashboard-footer a {
+            color: white;
+            text-decoration: none;
+        }
+        
+        .dashboard-footer a:hover {
+            text-decoration: underline;
+        }
+        
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .header-top {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .header-actions {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .stat-value {
+                font-size: 1.5rem;
+            }
+            
+            .dashboard-section {
+                padding: 15px;
+            }
+        }
+        
+        /* ANIMACIONES */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .stat-card, .chart-container, .dashboard-section {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+        
+        /* LOADING */
+        .loading {
+            text-align: center;
+            padding: 50px;
+            color: #666;
+        }
+        
+        .loading-spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* NO DATA STATE */
+        .no-data {
+            text-align: center;
+            padding: 40px 20px;
+            color: #6c757d;
+        }
+        
+        .no-data-icon {
+            font-size: 3rem;
+            color: #dee2e6;
+            margin-bottom: 15px;
+            display: block;
+        }
+    </style>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- HEADER -->
+        <div class="dashboard-header">
+            <div class="header-top">
+                <div class="header-title">
+                    <h1><i class="fas fa-chart-line"></i> Dashboard de Inspecciones</h1>
+                    <p><i class="far fa-calendar-alt"></i> <%= fechaActual %></p>
+                </div>
+                <div class="header-actions">
+                    <a href="/inspecciones" class="btn btn-primary">
+                        <i class="fas fa-list"></i> Ver Todas
+                    </a>
+                    <a href="/inspeccion" class="btn btn-success">
+                        <i class="fas fa-plus"></i> Nueva Inspección
+                    </a>
+                    <a href="/" class="btn btn-secondary">
+                        <i class="fas fa-home"></i> Inicio
+                    </a>
+                </div>
+            </div>
+            
+            <!-- RESUMEN RÁPIDO -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-clipboard-check"></i>
+                    </div>
+                    <div class="stat-value"><%= estadisticas.total_inspecciones || 0 %></div>
+                    <div class="stat-label">Total Inspecciones</div>
+                </div>
+                
+                <div class="stat-card good">
+                    <div class="stat-icon">
+                        <i class="fas fa-car"></i>
+                    </div>
+                    <div class="stat-value"><%= estadisticas.vehiculos_unicos || 0 %></div>
+                    <div class="stat-label">Vehículos Únicos</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-value"><%= estadisticas.conductores_unicos || 0 %></div>
+                    <div class="stat-label">Conductores</div>
+                </div>
+                
+                <div class="stat-card warning">
+                    <div class="stat-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="stat-value"><%= estadisticas.inspecciones_con_defectos || 0 %></div>
+                    <div class="stat-label">Con Defectos</div>
+                    <% if (estadisticas.total_inspecciones > 0) { %>
+                    <div class="stat-subtext"><%= porcentajeDefectos %>% del total</div>
+                    <% } %>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <div class="stat-value"><%= estadisticas.inspectores_activos || 0 %></div>
+                    <div class="stat-label">Inspectores</div>
+                </div>
+                
+                <div class="stat-card good">
+                    <div class="stat-icon">
+                        <i class="fas fa-tachometer-alt"></i>
+                    </div>
+                    <div class="stat-value"><%= estadisticas.promedio_kilometraje || 0 %></div>
+                    <div class="stat-label">Km Promedio</div>
+                    <div class="stat-subtext">kilómetros</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- GRÁFICOS -->
+        <div class="charts-grid">
+            <!-- GRÁFICO DE ACTIVIDAD MENSUAL -->
+            <div class="chart-container">
+                <div class="chart-header">
+                    <h3 class="chart-title"><i class="fas fa-chart-bar"></i> Actividad Mensual</h3>
+                </div>
+                <canvas id="chartMensual"></canvas>
+            </div>
+            
+            <!-- GRÁFICO DE TIPOS DE VEHÍCULO -->
+            <div class="chart-container">
+                <div class="chart-header">
+                    <h3 class="chart-title"><i class="fas fa-chart-pie"></i> Tipos de Vehículos</h3>
+                </div>
+                <canvas id="chartTipos"></canvas>
+            </div>
+        </div>
+        
+        <!-- SECCIÓN: VEHÍCULOS MÁS INSPECCIONADOS -->
+        <div class="dashboard-section">
+            <div class="section-header">
+                <h2><i class="fas fa-medal"></i> Vehículos Más Inspeccionados</h2>
+                <span class="badge badge-warning">Top 5</span>
+            </div>
+            
+            <% if (topVehiculos && topVehiculos.length > 0) { %>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Posición</th>
+                            <th>Placa</th>
+                            <th>Modelo</th>
+                            <th>Tipo</th>
+                            <th>Inspecciones</th>
+                            <th>Frecuencia</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% topVehiculos.forEach((vehiculo, index) => { %>
+                        <tr>
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <span style="font-weight: bold; color: #2c3e50;">#<%= index + 1 %></span>
+                                    <% if (index === 0) { %>
+                                    <i class="fas fa-crown" style="color: #FFD700;"></i>
+                                    <% } %>
+                                </div>
+                            </td>
+                            <td><strong><%= vehiculo.placa %></strong></td>
+                            <td><%= vehiculo.modelo || '--' %></td>
+                            <td><%= vehiculo.tipo || '--' %></td>
+                            <td>
+                                <span class="badge <%= vehiculo.inspecciones > 5 ? 'badge-danger' : 'badge-warning' %>">
+                                    <%= vehiculo.inspecciones %>
+                                </span>
+                            </td>
+                            <td>
+                                <div class="progress-container">
+                                    <div class="progress-label">
+                                        <span>Frecuencia</span>
+                                        <span><%= vehiculo.inspecciones %> veces</span>
+                                    </div>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" 
+                                             style="width: <%= Math.min(vehiculo.inspecciones * 20, 100) %>%;">
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            </div>
+            <% } else { %>
+            <div class="no-data">
+                <i class="fas fa-car no-data-icon"></i>
+                <p>No hay datos de vehículos inspeccionados</p>
+            </div>
+            <% } %>
+        </div>
+        
+        <!-- SECCIÓN: ACTIVIDAD RECIENTE -->
+        <div class="dashboard-section">
+            <div class="section-header">
+                <h2><i class="fas fa-history"></i> Últimos 6 Meses</h2>
+                <span class="badge badge-success">Tendencia</span>
+            </div>
+            
+            <% if (porMes && porMes.length > 0) { %>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Mes</th>
+                            <th>Total Inspecciones</th>
+                            <th>Con Defectos</th>
+                            <th>Tasa de Defectos</th>
+                            <th>Tendencia</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% porMes.forEach(mes => { 
+                            const tasaDefectos = mes.total > 0 ? Math.round((mes.con_defectos / mes.total) * 100) : 0;
+                        %>
+                        <tr>
+                            <td><strong><%= mes.mes_corto %></strong></td>
+                            <td><%= mes.total %></td>
+                            <td>
+                                <span class="badge <%= mes.con_defectos > 0 ? 'badge-danger' : 'badge-success' %>">
+                                    <%= mes.con_defectos %>
+                                </span>
+                            </td>
+                            <td>
+                                <div class="progress-container">
+                                    <div class="progress-label">
+                                        <span>Tasa</span>
+                                        <span><%= tasaDefectos %>%</span>
+                                    </div>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" 
+                                             style="width: <%= tasaDefectos %>%;
+                                                    background: <%= tasaDefectos > 30 ? 'linear-gradient(90deg, #e74c3c, #c0392b)' : 
+                                                                   tasaDefectos > 10 ? 'linear-gradient(90deg, #f39c12, #e67e22)' : 
+                                                                   'linear-gradient(90deg, #27ae60, #219653)' %>">
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <% if (tasaDefectos > 30) { %>
+                                <i class="fas fa-arrow-up" style="color: #e74c3c;"></i> Alta
+                                <% } else if (tasaDefectos > 10) { %>
+                                <i class="fas fa-arrow-right" style="color: #f39c12;"></i> Media
+                                <% } else { %>
+                                <i class="fas fa-arrow-down" style="color: #27ae60;"></i> Baja
+                                <% } %>
+                            </td>
+                        </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            </div>
+            <% } else { %>
+            <div class="no-data">
+                <i class="fas fa-chart-line no-data-icon"></i>
+                <p>No hay datos de actividad reciente</p>
+            </div>
+            <% } %>
+        </div>
+        
+        <!-- RESUMEN FINAL -->
+        <div class="dashboard-section">
+            <div class="section-header">
+                <h2><i class="fas fa-info-circle"></i> Resumen del Sistema</h2>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; border-left: 4px solid #3498db;">
+                    <h4><i class="fas fa-calendar-check"></i> Período Activo</h4>
+                    <p style="margin: 10px 0; font-size: 0.9rem; color: #666;">
+                        Desde: <strong><%= estadisticas.primera_inspeccion || '--' %></strong><br>
+                        Hasta: <strong><%= estadisticas.ultima_inspeccion || '--' %></strong>
+                    </p>
+                </div>
+                
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; border-left: 4px solid #27ae60;">
+                    <h4><i class="fas fa-check-circle"></i> Estado General</h4>
+                    <p style="margin: 10px 0; font-size: 0.9rem; color: #666;">
+                        Niveles: <strong><%= estadisticas.promedio_niveles || 0 %>%</strong><br>
+                        Luces: <strong><%= estadisticas.promedio_luces || 0 %>%</strong>
+                    </p>
+                </div>
+                
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; border-left: 4px solid #9b59b6;">
+                    <h4><i class="fas fa-chart-line"></i> Rendimiento</h4>
+                    <p style="margin: 10px 0; font-size: 0.9rem; color: #666;">
+                        Promedio por mes: <strong><%= Math.round(estadisticas.total_inspecciones / 6) || 0 %></strong><br>
+                        Tasa de defectos: <strong><%= porcentajeDefectos %>%</strong>
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- FOOTER -->
+        <div class="dashboard-footer">
+            <p>
+                <i class="fas fa-sync-alt"></i> Actualizado en tiempo real • 
+                <a href="/inspecciones"><i class="fas fa-external-link-alt"></i> Ver todas las inspecciones</a> • 
+                <a href="/exportar-inspecciones"><i class="fas fa-download"></i> Exportar datos</a>
+            </p>
+            <p style="margin-top: 10px; font-size: 0.8rem; opacity: 0.7;">
+                Sistema de Inspección Vehicular • <%= new Date().getFullYear() %>
+            </p>
+        </div>
+    </div>
+    
+    <script>
+        // CARGAR DATOS PARA GRÁFICOS
+        let datosGraficos = {};
+        try {
+            datosGraficos = <%= datosGraficos || '{}' %>;
+        } catch (e) {
+            console.error('Error parsing datosGraficos:', e);
+            datosGraficos = {};
+        }
+        
+        // GRÁFICO DE BARRAS - ACTIVIDAD MENSUAL
+        function renderChartMensual() {
+            const ctx = document.getElementById('chartMensual').getContext('2d');
+            
+            if (!datosGraficos.porMes || !datosGraficos.porMes.labels) {
+                document.getElementById('chartMensual').parentElement.innerHTML = `
+                    <div class="no-data">
+                        <i class="fas fa-chart-bar no-data-icon"></i>
+                        <p>No hay datos para mostrar</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: datosGraficos.porMes.labels,
+                    datasets: [
+                        {
+                            label: 'Total Inspecciones',
+                            data: datosGraficos.porMes.totales,
+                            backgroundColor: 'rgba(52, 152, 219, 0.7)',
+                            borderColor: 'rgba(52, 152, 219, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Con Defectos',
+                            data: datosGraficos.porMes.defectos,
+                            backgroundColor: 'rgba(231, 76, 60, 0.7)',
+                            borderColor: 'rgba(231, 76, 60, 1)',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Cantidad de Inspecciones'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // GRÁFICO DE DONUT - TIPOS DE VEHÍCULO
+        function renderChartTipos() {
+            const ctx = document.getElementById('chartTipos').getContext('2d');
+            
+            if (!datosGraficos.porTipo || !datosGraficos.porTipo.labels) {
+                document.getElementById('chartTipos').parentElement.innerHTML = `
+                    <div class="no-data">
+                        <i class="fas fa-chart-pie no-data-icon"></i>
+                        <p>No hay datos para mostrar</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            const colors = [
+                '#3498db', '#2ecc71', '#9b59b6', '#f39c12', 
+                '#1abc9c', '#e74c3c', '#34495e', '#7f8c8d'
+            ];
+            
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: datosGraficos.porTipo.labels,
+                    datasets: [{
+                        data: datosGraficos.porTipo.datos,
+                        backgroundColor: colors.slice(0, datosGraficos.porTipo.labels.length),
+                        borderWidth: 1,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.raw || 0;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = Math.round((value / total) * 100);
+                                    return `${label}: ${value} (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // ANIMAR LAS PROGRESS BARS
+        function animateProgressBars() {
+            document.querySelectorAll('.progress-fill').forEach(bar => {
+                const width = bar.style.width;
+                bar.style.width = '0%';
+                setTimeout(() => {
+                    bar.style.width = width;
+                }, 300);
+            });
+        }
+        
+        // ACTUALIZAR DATOS EN TIEMPO REAL (simulado)
+        function updateDashboardData() {
+            // Simular actualización cada 30 segundos
+            setTimeout(() => {
+                // Aquí podrías hacer fetch para datos actualizados
+                console.log('Actualizando datos del dashboard...');
+                updateDashboardData();
+            }, 30000);
+        }
+        
+        // INICIALIZAR DASHBOARD
+        document.addEventListener('DOMContentLoaded', function() {
+            // Renderizar gráficos
+            renderChartMensual();
+            renderChartTipos();
+            
+            // Animar progress bars
+            setTimeout(animateProgressBars, 500);
+            
+            // Iniciar actualización automática
+            updateDashboardData();
+            
+            // Agregar efecto de aparición a las cards
+            document.querySelectorAll('.stat-card').forEach((card, index) => {
+                card.style.animationDelay = `${index * 0.1}s`;
+            });
+        });
+        
+        // IMPRIMIR REPORTE
+        function printReport() {
+            const originalTitle = document.title;
+            document.title = `Reporte Dashboard - ${new Date().toLocaleDateString('es-ES')}`;
+            window.print();
+            document.title = originalTitle;
+        }
+        
+        // EXPORTAR DATOS
+        function exportDashboardData() {
+            alert('Función de exportación en desarrollo...');
+            // Aquí puedes implementar exportación a CSV o PDF
+        }
+        
+        // ACTUALIZAR MANUALMENTE
+        function refreshDashboard() {
+            location.reload();
+        }
+    </script>
+</body>
+</html>
