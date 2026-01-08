@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> - <%= appName %></title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        
+        body {
+            background-color: #f0f2f5;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #4a6491);
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header h1 {
+            font-size: 1.8rem;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: #3498db;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+        
+        .btn:hover {
+            background: #2980b9;
+        }
+        
+        .btn-back {
+            background: #7f8c8d;
+        }
+        
+        .btn-back:hover {
+            background: #666;
+        }
+        
+        .result-box {
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .success {
+            color: #27ae60;
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+        
+        .error {
+            color: #e74c3c;
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+        
+        .details {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 30px 0;
+            text-align: left;
+        }
+        
+        .details pre {
+            background: #2c3e50;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .troubleshooting {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: left;
+        }
+        
+        .troubleshooting h3 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+        
+        .troubleshooting ol {
+            margin-left: 20px;
+        }
+        
+        .troubleshooting li {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔧 <%= title %></h1>
+            <a href="/" class="btn btn-back">← Volver al Inicio</a>
+        </div>
+        
+        <div class="result-box">
+            <% if (conectado) { %>
+                <div class="success">✅</div>
+                <h2 style="color: #27ae60;">CONEXIÓN EXITOSA</h2>
+                <p>El sistema se conectó correctamente a SQL Server</p>
+                
+                <div class="details">
+                    <h3>📊 Información de la conexión:</h3>
+                    <p><strong>Servidor:</strong> <%= process.env.DB_HOST %></p>
+                    <p><strong>Base de datos:</strong> <%= process.env.DB_NAME %></p>
+                    <p><strong>Usuario:</strong> <%= process.env.DB_USER %></p>
+                    <p><strong>Fecha del servidor:</strong> <%= new Date(fecha).toLocaleString() %></p>
+                    
+                    <h3 style="margin-top: 20px;">Información de SQL Server:</h3>
+                    <pre><%= version.substring(0, 200) %>...</pre>
+                </div>
+                
+                <p style="margin-top: 30px; color: #666;">
+                    ✅ ¡Perfecto! Ahora puedes usar todas las funciones del sistema.
+                </p>
+                
+            <% } else { %>
+                <div class="error">❌</div>
+                <h2 style="color: #e74c3c;">ERROR DE CONEXIÓN</h2>
+                <p>No se pudo conectar a SQL Server</p>
+                
+                <div class="details">
+                    <h3>🔍 Detalles del error:</h3>
+                    <p><strong>Mensaje:</strong> <%= error %></p>
+                    <p><strong>Servidor intentado:</strong> <%= process.env.DB_HOST %></p>
+                    <p><strong>Usuario:</strong> <%= process.env.DB_USER %></p>
+                </div>
+                
+                <div class="troubleshooting">
+                    <h3>🔧 Pasos para solucionar:</h3>
+                    <ol>
+                        <li>Abre <strong>SQL Server Management Studio</strong> e intenta conectar con las mismas credenciales</li>
+                        <li>Verifica que SQL Server esté encendido (services.msc → SQL Server)</li>
+                        <li>Revisa el archivo <code>.env</code> en la carpeta backend</li>
+                        <li>Prueba cambiar <code>localhost</code> por <code>127.0.0.1</code> o el nombre de tu servidor</li>
+                        <li>Verifica que el puerto 1433 esté abierto en el firewall</li>
+                    </ol>
+                </div>
+            <% } %>
+            
+            <div style="margin-top: 40px;">
+                <a href="/" class="btn">🏠 Ir al Inicio</a>
+                <% if (!conectado) { %>
+                    <a href="/test-db" class="btn" style="margin-left: 10px; background: #f39c12;">
+                        🔄 Intentar nuevamente
+                    </a>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

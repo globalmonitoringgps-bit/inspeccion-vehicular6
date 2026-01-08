@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> - <%= appName %></title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        
+        body {
+            background-color: #f0f2f5;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #4a6491);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .menu {
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: #3498db;
+            color: white;
+            padding: 15px 30px;
+            margin: 10px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: background 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn:hover {
+            background: #2980b9;
+        }
+        
+        .btn-success {
+            background: #27ae60;
+        }
+        
+        .btn-success:hover {
+            background: #219653;
+        }
+        
+        .btn-warning {
+            background: #f39c12;
+        }
+        
+        .btn-warning:hover {
+            background: #e67e22;
+        }
+        
+        .info-box {
+            background: #f8f9fa;
+            padding: 20px;
+            margin: 20px;
+            border-radius: 5px;
+            border-left: 5px solid #3498db;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            border-top: 1px solid #eee;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚗 <%= appName %></h1>
+            <p>Formato: <%= formatoCodigo %> | Versión: <%= appVersion %></p>
+            <p>Gestión del Talento Humano</p>
+        </div>
+        
+        <!-- Dentro del menú, agrega esto: -->
+<div class="menu" style="text-align: center;">
+    <a href="/inspeccion" class="btn" style="margin: 10px;">📝 Nueva Inspección</a>
+    <a href="/inspecciones" class="btn" style="margin: 10px;">📋 Ver Inspecciones</a>  <!-- NUEVO -->
+    <a href="/test-db" class="btn" style="margin: 10px;">🔧 Probar Conexión BD</a>
+    <a href="/dashboard" class="btn" style="margin: 10px; background: #9b59b6;">📊 Dashboard</a>  <!-- NUEVO -->
+</div>
+        
+        <footer>
+            <p>© <%= year %> - Sistema de Inspección Vehicular</p>
+            <p>Desarrollado para cumplimiento del formato <%= formatoCodigo %></p>
+        </footer>
+    </div>
+</body>
+</html>

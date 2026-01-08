@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inspecciones Guardadas - <%= appName %></title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        
+        body {
+            background-color: #f0f2f5;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #4a6491);
+            color: white;
+            padding: 20px;
+        }
+        
+        .header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+        
+        .header-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: #3498db;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .btn:hover {
+            background: #2980b9;
+        }
+        
+        .btn-back {
+            background: #7f8c8d;
+        }
+        
+        .btn-back:hover {
+            background: #666;
+        }
+        
+        .btn-success {
+            background: #27ae60;
+        }
+        
+        .btn-success:hover {
+            background: #219653;
+        }
+        
+        .content {
+            padding: 20px;
+        }
+        
+        .stats-bar {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 4px solid #3498db;
+        }
+        
+        .filters {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border: 1px solid #ffc107;
+        }
+        
+        .filters form {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: flex-end;
+        }
+        
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .filter-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #856404;
+        }
+        
+        .filter-group input,
+        .filter-group select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+        
+        th {
+            background: #2c3e50;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: bold;
+            position: sticky;
+            top: 0;
+        }
+        
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            vertical-align: top;
+        }
+        
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .badge-success {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .badge-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .badge-danger {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .actions {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .action-btn {
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-size: 12px;
+            text-decoration: none;
+        }
+        
+        .action-view {
+            background: #3498db;
+            color: white;
+        }
+        
+        .action-edit {
+            background: #f39c12;
+            color: white;
+        }
+        
+        .action-delete {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+            gap: 5px;
+        }
+        
+        .page-link {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            background: white;
+            color: #3498db;
+            text-decoration: none;
+            border-radius: 3px;
+        }
+        
+        .page-link:hover {
+            background: #f5f5f5;
+        }
+        
+        .page-link.active {
+            background: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: #666;
+        }
+        
+        .empty-state i {
+            font-size: 3rem;
+            color: #ddd;
+            margin-bottom: 20px;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-list"></i> Inspecciones Guardadas</h1>
+            <p>Total: <%= inspecciones.length %> inspecciones registradas</p>
+            
+            <div class="header-controls">
+                <div>
+                    <a href="/" class="btn btn-back"><i class="fas fa-home"></i> Inicio</a>
+                    <a href="/inspeccion" class="btn btn-success" style="margin-left: 10px;">
+                        <i class="fas fa-plus"></i> Nueva Inspección
+                    </a>
+                </div>
+                <div>
+                    <a href="/exportar-inspecciones" class="btn" style="background: #6c757d;">
+                        <i class="fas fa-download"></i> Exportar
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="content">
+            <div class="stats-bar">
+                <div>
+                    <strong>📊 Estadísticas:</strong>
+                    <span style="margin-left: 15px;">Total: <%= total %></span>
+                    <span style="margin-left: 10px; color: #27ae60;">✅ Buenas: <%= buenas %></span>
+                    <span style="margin-left: 10px; color: #e74c3c;">❌ Malas: <%= malas %></span>
+                </div>
+                <div>
+                    <a href="/test-db" class="btn" style="background: #17a2b8;">
+                        <i class="fas fa-database"></i> Estado BD
+                    </a>
+                </div>
+            </div>
+            
+            <div class="filters">
+                <form method="GET" action="/inspecciones">
+                    <div class="filter-group">
+                        <label><i class="fas fa-search"></i> Buscar por placa:</label>
+                        <input type="text" name="placa" placeholder="Ej: ABC123" value="<%= filtroPlaca || '' %>">
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label><i class="fas fa-user"></i> Conductor:</label>
+                        <input type="text" name="conductor" placeholder="Nombre conductor" value="<%= filtroConductor || '' %>">
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label><i class="fas fa-calendar"></i> Fecha desde:</label>
+                        <input type="date" name="fecha_desde" value="<%= filtroFechaDesde || '' %>">
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label><i class="fas fa-calendar"></i> Fecha hasta:</label>
+                        <input type="date" name="fecha_hasta" value="<%= filtroFechaHasta || '' %>">
+                    </div>
+                    
+                    <div class="filter-group" style="flex: 0 0 auto;">
+                        <button type="submit" class="btn" style="background: #6c757d;">
+                            <i class="fas fa-filter"></i> Filtrar
+                        </button>
+                        <a href="/inspecciones" class="btn btn-back" style="margin-left: 5px;">
+                            <i class="fas fa-redo"></i> Limpiar
+                        </a>
+                    </div>
+                </form>
+            </div>
+            
+            <% if (inspecciones.length > 0) { %>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Fecha</th>
+                            <th>Placa</th>
+                            <th>Conductor</th>
+                            <th>Tipo Vehículo</th>
+                            <th>Inspector</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% inspecciones.forEach(ins => { %>
+                        <tr>
+                            <td><strong>#<%= ins.id %></strong></td>
+                            <td><%= new Date(ins.fecha_inspeccion).toLocaleDateString('es-ES') %></td>
+                            <td>
+                                <strong><%= ins.placa %></strong>
+                                <% if (ins.otra_placa) { %>
+                                <br><small>(<%= ins.otra_placa %>)</small>
+                                <% } %>
+                            </td>
+                            <td><%= ins.nombre_conductor %></td>
+                            <td><%= ins.tipo_vehiculo %></td>
+                            <td><%= ins.nombre_elabora %></td>
+                            <td>
+                                <% 
+                                const tieneDefectos = ins.defecto_frontal || ins.defecto_trasero || 
+                                                     ins.defecto_lateral_izq || ins.defecto_lateral_der;
+                                %>
+                                <% if (tieneDefectos) { %>
+                                <span class="badge badge-danger">Con Defectos</span>
+                                <% } else { %>
+                                <span class="badge badge-success">Aprobado</span>
+                                <% } %>
+                            </td>
+                            <td class="actions">
+                                <a href="/inspeccion/<%= ins.id %>" class="action-btn action-view">
+                                    <i class="fas fa-eye"></i> Ver
+                                </a>
+                                <a href="/inspeccion/editar/<%= ins.id %>" class="action-btn action-edit">
+                                    <i class="fas fa-edit"></i> Editar
+                                </a>
+                                <a href="/inspeccion/eliminar/<%= ins.id %>" 
+                                   class="action-btn action-delete"
+                                   onclick="return confirm('¿Eliminar inspección #<%= ins.id %>?')">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            </div>
+            
+            <% if (paginas > 1) { %>
+            <div class="pagination">
+                <% for (let i = 1; i <= paginas; i++) { %>
+                <a href="/inspecciones?pagina=<%= i %>" 
+                   class="page-link <%= pagina === i ? 'active' : '' %>">
+                    <%= i %>
+                </a>
+                <% } %>
+            </div>
+            <% } %>
+            
+            <% } else { %>
+            <div class="empty-state">
+                <i class="fas fa-clipboard-list"></i>
+                <h3>No hay inspecciones registradas</h3>
+                <p>Comienza registrando la primera inspección vehicular</p>
+                <a href="/inspeccion" class="btn btn-success" style="margin-top: 20px;">
+                    <i class="fas fa-plus"></i> Crear Primera Inspección
+                </a>
+            </div>
+            <% } %>
+        </div>
+    </div>
+</body>
+</html>

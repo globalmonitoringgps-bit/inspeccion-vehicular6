@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> - <%= appName %></title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        
+        body {
+            background-color: #f0f2f5;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #4a6491);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .menu {
+            padding: 20px;
+            text-align: center;
+            background: #f8f9fa;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: #3498db;
+            color: white;
+            padding: 12px 25px;
+            margin: 5px;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background 0.3s;
+            text-align: center;
+        }
+        
+        .btn:hover {
+            background: #2980b9;
+        }
+        
+        .btn-back {
+            background: #7f8c8d;
+        }
+        
+        .btn-back:hover {
+            background: #666;
+        }
+        
+        .error-content {
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .error-icon {
+            font-size: 5rem;
+            color: #e74c3c;
+            margin-bottom: 20px;
+        }
+        
+        .error-message {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 25px;
+            border-radius: 5px;
+            margin: 30px 0;
+            text-align: left;
+        }
+        
+        .error-details {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+            text-align: left;
+            border-left: 4px solid #6c757d;
+        }
+        
+        pre {
+            background: #2c3e50;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            margin-top: 10px;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            border-top: 1px solid #eee;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚗 <%= appName %></h1>
+            <p>Formato: <%= formatoCodigo %> | Versión: <%= appVersion %></p>
+        </div>
+        
+        <div class="menu">
+            <a href="/" class="btn">🏠 Inicio</a>
+            <a href="/inspeccion" class="btn">📝 Nueva Inspección</a>
+            <a href="/inspecciones" class="btn">📋 Ver Inspecciones</a>
+            <a href="/dashboard" class="btn">📊 Dashboard</a>
+            <a href="/test-db" class="btn">🔧 Probar Conexión</a>
+        </div>
+        
+        <div class="error-content">
+            <div class="error-icon">❌</div>
+            <h2 style="color: #e74c3c;"><%= title %></h2>
+            
+            <div class="error-message">
+                <h3><%= message %></h3>
+                <% if (error && error.message) { %>
+                    <p><strong>Detalles:</strong> <%= error.message %></p>
+                <% } %>
+            </div>
+            
+            <% if (error && error.stack && process.env.NODE_ENV === 'development') { %>
+            <div class="error-details">
+                <h4>📋 Stack Trace (solo en desarrollo):</h4>
+                <pre><%= error.stack %></pre>
+            </div>
+            <% } %>
+            
+            <% if (error && error.code) { %>
+            <div class="error-details">
+                <h4>🔍 Código de error:</h4>
+                <p><strong><%= error.code %></strong></p>
+                
+                <% if (error.code.includes('ER_')) { %>
+                <p><strong>Sugerencias para MySQL:</strong></p>
+                <ul style="text-align: left; margin: 10px 20px;">
+                    <% if (error.code.includes('ACCESS_DENIED')) { %>
+                    <li>Verifica usuario y contraseña de MySQL</li>
+                    <li>Revisa los permisos del usuario en MySQL</li>
+                    <% } else if (error.code.includes('BAD_DB')) { %>
+                    <li>La base de datos no existe</li>
+                    <li>Ejecuta el script de creación de la base de datos</li>
+                    <% } else if (error.code.includes('TABLE')) { %>
+                    <li>La tabla no existe en la base de datos</li>
+                    <li>Ejecuta el script de creación de tablas</li>
+                    <% } %>
+                </ul>
+                <% } %>
+            </div>
+            <% } %>
+            
+            <div style="margin-top: 40px;">
+                <a href="javascript:history.back()" class="btn btn-back">↩️ Volver atrás</a>
+                <a href="/" class="btn">🏠 Ir al Inicio</a>
+                <a href="/test-db" class="btn" style="background: #f39c12;">🔧 Probar Conexión BD</a>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Sistema de Inspección Vehicular | Formato <%= formatoCodigo %> v<%= appVersion %></p>
+            <p>© <%= new Date().getFullYear() %> - Gestión del Talento Humano</p>
+            <p style="font-size: 12px; color: #999; margin-top: 10px;">
+                Error generado: <%= new Date().toLocaleString('es-ES') %>
+            </p>
+        </footer>
+    </div>
+</body>
+</html>
