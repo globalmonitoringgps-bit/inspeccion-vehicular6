@@ -372,6 +372,7 @@ app.post('/inspeccion', async (req, res) => {
 // ============================================
 
 // Listar todas las inspecciones
+// Listar todas las inspecciones - VERSIÓN CORREGIDA
 app.get('/inspecciones', async (req, res) => {
     try {
         const { executeQuery } = require('./db/connection');
@@ -408,20 +409,19 @@ app.get('/inspecciones', async (req, res) => {
             params.push(req.query.fecha_hasta);
         }
         
+        // Construir WHERE clause
         const whereClause = whereConditions.length > 0 ? 'WHERE ' + whereConditions.join(' AND ') : '';
         
-        // Consulta para contar total
-        const countQuery = `
-            SELECT COUNT(*) as total 
-            FROM Inspecciones 
-            ${whereClause}
-        `;
+        // 1. Consulta para contar total (usa los mismos parámetros de filtro)
+        const countQuery = `SELECT COUNT(*) as total FROM Inspecciones ${whereClause}`;
+        console.log('🔍 Count query:', countQuery);
+        console.log('📊 Count params:', params);
         
         const countResult = await executeQuery(countQuery, params);
         const total = countResult[0].total;
         const paginas = Math.ceil(total / porPagina);
         
-        // Consulta para obtener inspecciones (MySQL usa LIMIT/OFFSET)
+        // 2. Consulta para obtener inspecciones - SOLUCIÓN 1: Sin placeholders para LIMIT/OFFSET
         const query = `
             SELECT 
                 id, fecha_inspeccion, placa, otra_placa, nombre_conductor,
@@ -431,14 +431,18 @@ app.get('/inspecciones', async (req, res) => {
             FROM Inspecciones 
             ${whereClause}
             ORDER BY fecha_creacion DESC
-            LIMIT ? OFFSET ?
+            LIMIT ${porPagina} OFFSET ${offset}
         `;
         
-        // Agregar parámetros de paginación
-        const queryParams = [...params, porPagina, offset];
-        const result = await executeQuery(query, queryParams);
+        console.log('🔍 Select query:', query);
+        console.log('📊 Select params:', params);
         
-        // Estadísticas
+        // IMPORTANTE: Solo pasamos params (los filtros), porPagina y offset ya están en el string
+        const result = await executeQuery(query, params);
+        
+        console.log('✅ Resultados obtenidos:', result.length);
+        
+        // 3. Estadísticas generales (sin filtros)
         const statsQuery = `
             SELECT 
                 COUNT(*) as total,
@@ -454,6 +458,8 @@ app.get('/inspecciones', async (req, res) => {
         
         res.render('inspecciones-lista', {
             title: 'Inspecciones Guardadas',
+            appName: 'Sistema de Inspección Vehicular',
+            formatoCodigo: 'FMT-INS-VEH-001',
             inspecciones: result,
             total: statsResult[0].total || 0,
             buenas: (statsResult[0].total || 0) - (statsResult[0].con_defectos || 0),
@@ -470,267 +476,15 @@ app.get('/inspecciones', async (req, res) => {
         console.error('❌ Error al obtener inspecciones:', error.message);
         console.error('Stack:', error.stack);
         
+        // Para debugging más detallado
+        console.error('🔍 Error code:', error.code);
+        console.error('🔍 Error errno:', error.errno);
+        console.error('🔍 Error sqlState:', error.sqlState);
+        console.error('🔍 Error sqlMessage:', error.sqlMessage);
+        
         res.render('error', {
             title: 'Error',
             message: 'No se pudieron cargar las inspecciones',
-            error: process.env.NODE_ENV === 'development' ? error : {}
-        });
-    }
-});
-
-// Ver detalle de una inspección específica
-app.get('/inspeccion/:id', async (req, res) => {
-    try {
-        const { executeQuery } = require('./db/connection');
-        
-        const query = `
-            SELECT 
-                *,
-                CASE 
-                    WHEN nivel_refrigerante = 'BUENO' AND nivel_frenos = 'BUENO' AND nivel_aceite = 'BUENO' 
-                    THEN '✅ Óptimo' 
-                    ELSE '⚠️ Revisar' 
-                END as estado_niveles,
-                CASE 
-                    WHEN pedal_acelerador = 'BUENO' AND pedal_freno = 'BUENO' 
-                    THEN '✅ Óptimo' 
-                    ELSE '⚠️ Revisar' 
-                END as estado_pedales,
-                CASE 
-                    WHEN luz_principales = 'BUENO' AND luz_direccionales = 'BUENO' AND luz_stops = 'BUENO' 
-                    THEN '✅ Óptimo' 
-                    ELSE '⚠️ Revisar' 
-                END as estado_luces
-            FROM Inspecciones 
-            WHERE id = ? AND activo = 1
-        `;
-        
-        const result = await executeQuery(query, [req.params.id]);
-        
-        if (result.length === 0) {
-            return res.render('error', {
-                title: 'No encontrado',
-                message: 'La inspección no existe o fue eliminada'
-            });
-        }
-        
-        const inspeccion = result[0];
-        
-        // Calcular estadísticas de esta inspección
-        const items = [
-            'nivel_refrigerante', 'nivel_frenos', 'nivel_aceite', 'nivel_hidraulico', 'nivel_agua',
-            'pedal_acelerador', 'pedal_clutch', 'pedal_freno',
-            'luz_principales', 'luz_direccionales', 'luz_estacionarias', 'luz_stops', 'luz_testigos',
-            'luz_reversa', 'luz_internas'
-        ];
-        
-        let buenos = 0;
-        let malos = 0;
-        let na = 0;
-        
-        items.forEach(item => {
-            if (inspeccion[item] === 'BUENO') buenos++;
-            else if (inspeccion[item] === 'MALO') malos++;
-            else if (inspeccion[item] === 'NA') na++;
-        });
-        
-        res.render('inspeccion-detalle', {
-            title: `Inspección #${inspeccion.id}`,
-            inspeccion: inspeccion,
-            fechaFormateada: new Date(inspeccion.fecha_inspeccion).toLocaleDateString('es-ES'),
-            fechaCreacionFormateada: new Date(inspeccion.fecha_creacion).toLocaleString('es-ES'),
-            estadisticas: {
-                total: items.length,
-                buenos: buenos,
-                malos: malos,
-                na: na,
-                porcentajeBuenos: Math.round((buenos / items.length) * 100)
-            }
-        });
-        
-    } catch (error) {
-        console.error('❌ Error al obtener inspección:', error.message);
-        console.error('Stack:', error.stack);
-        
-        res.render('error', {
-            title: 'Error',
-            message: 'No se pudo cargar la inspección',
-            error: process.env.NODE_ENV === 'development' ? error : {}
-        });
-    }
-});
-
-// Editar inspección (formulario)
-app.get('/inspeccion/editar/:id', async (req, res) => {
-    try {
-        const { executeQuery } = require('./db/connection');
-        
-        const result = await executeQuery('SELECT * FROM Inspecciones WHERE id = ? AND activo = 1', [req.params.id]);
-        
-        if (result.length === 0) {
-            return res.render('error', {
-                title: 'No encontrado',
-                message: 'La inspección no existe o fue eliminada'
-            });
-        }
-        
-        const inspeccion = result[0];
-        
-        res.render('inspeccion-editar', {
-            title: `Editar Inspección #${inspeccion.id}`,
-            inspeccion: inspeccion,
-            today: new Date().toISOString().split('T')[0]
-        });
-        
-    } catch (error) {
-        console.error('Error al cargar inspección para editar:', error);
-        res.render('error', {
-            title: 'Error',
-            message: 'No se pudo cargar la inspección para editar',
-            error: process.env.NODE_ENV === 'development' ? error : {}
-        });
-    }
-});
-
-// Actualizar inspección
-app.post('/inspeccion/editar/:id', async (req, res) => {
-    try {
-        const { executeQuery } = require('./db/connection');
-        
-        // Similar al código de guardar, pero con UPDATE
-        // ... (código de actualización similar al POST /inspeccion)
-        
-        res.redirect(`/inspeccion/${req.params.id}`);
-        
-    } catch (error) {
-        console.error('Error al actualizar inspección:', error);
-        res.render('error', {
-            title: 'Error',
-            message: 'No se pudo actualizar la inspección',
-            error: process.env.NODE_ENV === 'development' ? error : {}
-        });
-    }
-});
-
-// Eliminar inspección (marcar como inactiva)
-app.get('/inspeccion/eliminar/:id', async (req, res) => {
-    try {
-        const { executeQuery } = require('./db/connection');
-        
-        await executeQuery('UPDATE Inspecciones SET activo = 0 WHERE id = ?', [req.params.id]);
-        
-        console.log(`🗑️ Inspección #${req.params.id} eliminada (marcada como inactiva)`);
-        
-        res.redirect('/inspecciones');
-        
-    } catch (error) {
-        console.error('Error al eliminar inspección:', error);
-        res.render('error', {
-            title: 'Error',
-            message: 'No se pudo eliminar la inspección',
-            error: process.env.NODE_ENV === 'development' ? error : {}
-        });
-    }
-});
-
-// Exportar inspecciones a CSV
-app.get('/exportar-inspecciones', async (req, res) => {
-    try {
-        const { executeQuery } = require('./db/connection');
-        
-        const result = await executeQuery(`
-            SELECT 
-                id, fecha_inspeccion, placa, nombre_conductor, tipo_vehiculo,
-                modelo, licencia_conductor, kilometraje, nombre_elabora,
-                fecha_creacion
-            FROM Inspecciones 
-            WHERE activo = 1
-            ORDER BY fecha_inspeccion DESC
-        `);
-        
-        // Crear CSV
-        let csv = 'ID,Fecha,Placa,Conductor,Tipo Vehículo,Modelo,Licencia,Kilometraje,Inspector,Fecha Registro\n';
-        
-        result.forEach(row => {
-            csv += `"${row.id}","${new Date(row.fecha_inspeccion).toLocaleDateString('es-ES')}","${row.placa}","${row.nombre_conductor}","${row.tipo_vehiculo}","${row.modelo}","${row.licencia_conductor}","${row.kilometraje}","${row.nombre_elabora}","${new Date(row.fecha_creacion).toLocaleString('es-ES')}"\n`;
-        });
-        
-        const fecha = new Date().toISOString().split('T')[0];
-        
-        res.setHeader('Content-Type', 'text/csv');
-        res.setHeader('Content-Disposition', `attachment; filename=inspecciones-${fecha}.csv`);
-        res.send(csv);
-        
-    } catch (error) {
-        console.error('Error al exportar inspecciones:', error);
-        res.render('error', {
-            title: 'Error',
-            message: 'No se pudieron exportar las inspecciones',
-            error: process.env.NODE_ENV === 'development' ? error : {}
-        });
-    }
-});
-
-// Dashboard/estadísticas
-app.get('/dashboard', async (req, res) => {
-    try {
-        const { executeQuery } = require('./db/connection');
-        
-        // Estadísticas generales
-        const statsQuery = `
-            SELECT 
-                COUNT(*) as total_inspecciones,
-                COUNT(DISTINCT placa) as vehiculos_unicos,
-                COUNT(DISTINCT nombre_conductor) as conductores_unicos,
-                MIN(fecha_inspeccion) as primera_inspeccion,
-                MAX(fecha_inspeccion) as ultima_inspeccion,
-                AVG(kilometraje) as promedio_kilometraje
-            FROM Inspecciones 
-            WHERE activo = 1
-        `;
-        
-        const statsResult = await executeQuery(statsQuery);
-        
-        // Inspecciones por mes (MySQL usa DATE_FORMAT)
-        const porMesQuery = `
-            SELECT 
-                DATE_FORMAT(fecha_inspeccion, '%Y-%m') as mes,
-                COUNT(*) as cantidad
-            FROM Inspecciones 
-            WHERE activo = 1
-            GROUP BY DATE_FORMAT(fecha_inspeccion, '%Y-%m')
-            ORDER BY mes DESC
-        `;
-        
-        const porMesResult = await executeQuery(porMesQuery);
-        
-        // Vehículos más inspeccionados (MySQL usa LIMIT)
-        const topVehiculosQuery = `
-            SELECT 
-                placa,
-                COUNT(*) as inspecciones,
-                MAX(modelo) as modelo
-            FROM Inspecciones 
-            WHERE activo = 1
-            GROUP BY placa
-            ORDER BY inspecciones DESC
-            LIMIT 10
-        `;
-        
-        const topVehiculosResult = await executeQuery(topVehiculosQuery);
-        
-        res.render('dashboard', {
-            title: 'Dashboard',
-            estadisticas: statsResult[0],
-            porMes: porMesResult,
-            topVehiculos: topVehiculosResult
-        });
-        
-    } catch (error) {
-        console.error('Error al cargar dashboard:', error);
-        res.render('error', {
-            title: 'Error',
-            message: 'No se pudo cargar el dashboard',
             error: process.env.NODE_ENV === 'development' ? error : {}
         });
     }

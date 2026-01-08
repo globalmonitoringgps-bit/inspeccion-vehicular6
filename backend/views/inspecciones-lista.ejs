@@ -2,71 +2,117 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Inspecciones Guardadas - <%= appName %></title>
     <style>
+        /* RESET Y BASE RESPONSIVE */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
         body {
             background-color: #f0f2f5;
-            padding: 20px;
+            padding: 10px;
+            font-size: 16px;
+            line-height: 1.5;
+            -webkit-text-size-adjust: 100%;
+            -webkit-tap-highlight-color: transparent;
         }
         
+        /* CONTAINER RESPONSIVE */
         .container {
-            max-width: 1200px;
+            max-width: 100%;
             margin: 0 auto;
             background: white;
-            border-radius: 10px;
+            border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             overflow: hidden;
         }
         
+        /* HEADER RESPONSIVE */
         .header {
             background: linear-gradient(135deg, #2c3e50, #4a6491);
             color: white;
-            padding: 20px;
+            padding: 15px;
+            position: relative;
+        }
+        
+        .header-content {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .header-title {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
         }
         
         .header h1 {
-            font-size: 1.8rem;
-            margin-bottom: 10px;
+            font-size: 1.5rem;
+            margin: 0;
+            line-height: 1.2;
         }
         
+        .header-subtitle {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        /* HEADER CONTROLS RESPONSIVE */
         .header-controls {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
         }
         
+        .controls-left, .controls-right {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            flex: 1;
+        }
+        
+        .controls-right {
+            justify-content: flex-end;
+        }
+        
+        /* BOTONES RESPONSIVE */
         .btn {
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
             background: #3498db;
             color: white;
-            padding: 10px 20px;
-            border-radius: 5px;
+            padding: 12px 16px;
+            border-radius: 6px;
             text-decoration: none;
-            transition: background 0.3s;
+            transition: all 0.3s;
             border: none;
             cursor: pointer;
             font-size: 14px;
+            font-weight: 500;
+            white-space: nowrap;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
         }
         
         .btn:hover {
             background: #2980b9;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
         
-        .btn-back {
-            background: #7f8c8d;
-        }
-        
-        .btn-back:hover {
-            background: #666;
+        .btn-sm {
+            padding: 8px 12px;
+            font-size: 13px;
         }
         
         .btn-success {
@@ -77,120 +123,347 @@
             background: #219653;
         }
         
-        .content {
-            padding: 20px;
+        .btn-secondary {
+            background: #6c757d;
         }
         
-        .stats-bar {
-            background: #f8f9fa;
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        
+        .btn-info {
+            background: #17a2b8;
+        }
+        
+        .btn-info:hover {
+            background: #138496;
+        }
+        
+        .btn-back {
+            background: #7f8c8d;
+        }
+        
+        .btn-back:hover {
+            background: #666;
+        }
+        
+        .content {
             padding: 15px;
-            border-radius: 5px;
+        }
+        
+        /* DASHBOARD STATS RESPONSIVE */
+        .dashboard-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
             margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        }
+        
+        @media (min-width: 768px) {
+            .dashboard-stats {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
             border-left: 4px solid #3498db;
         }
         
-        .filters {
+        .stat-card.good {
+            border-left-color: #27ae60;
+        }
+        
+        .stat-card.bad {
+            border-left-color: #e74c3c;
+        }
+        
+        .stat-card.info {
+            border-left-color: #17a2b8;
+        }
+        
+        .stat-title {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        /* FILTROS RESPONSIVE */
+        .filters-section {
             background: #fff3cd;
             padding: 15px;
-            border-radius: 5px;
+            border-radius: 8px;
             margin-bottom: 20px;
             border: 1px solid #ffc107;
         }
         
-        .filters form {
+        .filters-section h3 {
+            color: #856404;
+            margin-bottom: 15px;
+            font-size: 1rem;
             display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-            align-items: flex-end;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .filters-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+        
+        @media (min-width: 768px) {
+            .filters-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
         }
         
         .filter-group {
-            flex: 1;
-            min-width: 200px;
+            display: flex;
+            flex-direction: column;
         }
         
         .filter-group label {
-            display: block;
+            font-size: 13px;
+            font-weight: 600;
             margin-bottom: 5px;
-            font-weight: bold;
             color: #856404;
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
         
-        .filter-group input,
-        .filter-group select {
-            width: 100%;
-            padding: 8px;
+        .filter-group input {
+            padding: 10px;
             border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        
-        .table-container {
-            overflow-x: auto;
-            margin: 20px 0;
-        }
-        
-        table {
-            width: 100%;
-            border-collapse: collapse;
+            border-radius: 6px;
             font-size: 14px;
         }
         
-        th {
-            background: #2c3e50;
-            color: white;
-            padding: 12px;
+        .filter-actions {
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+        }
+        
+        @media (max-width: 767px) {
+            .filter-actions {
+                grid-column: 1 / -1;
+            }
+        }
+        
+        /* LISTA DE INSPECCIONES - RESPONSIVE */
+        .inspecciones-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .inspecciones-header h2 {
+            font-size: 1.2rem;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .results-info {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        /* CARDS PARA MÓVIL, TABLA PARA DESKTOP */
+        .desktop-view {
+            display: none;
+        }
+        
+        .mobile-view {
+            display: block;
+        }
+        
+        @media (min-width: 768px) {
+            .desktop-view {
+                display: block;
+            }
+            .mobile-view {
+                display: none;
+            }
+        }
+        
+        /* TABLA DESKTOP */
+        .table-responsive {
+            overflow-x: auto;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+        }
+        
+        .table th {
+            background: #f8f9fa;
+            color: #495057;
+            padding: 12px 15px;
             text-align: left;
-            font-weight: bold;
+            font-weight: 600;
+            font-size: 14px;
+            border-bottom: 2px solid #dee2e6;
             position: sticky;
             top: 0;
         }
         
-        td {
-            padding: 12px;
-            border-bottom: 1px solid #ddd;
-            vertical-align: top;
+        .table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e9ecef;
+            font-size: 14px;
+            vertical-align: middle;
         }
         
-        tr:hover {
-            background-color: #f5f5f5;
+        .table tbody tr {
+            transition: background-color 0.2s;
         }
         
-        .badge {
-            display: inline-block;
-            padding: 3px 8px;
-            border-radius: 12px;
-            font-size: 12px;
+        .table tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        /* CARDS MÓVIL */
+        .inspecciones-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+        
+        .inspeccion-card {
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+        
+        .inspeccion-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+        
+        .card-header {
+            background: #f8f9fa;
+            padding: 15px;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .card-id {
             font-weight: bold;
+            color: #2c3e50;
+            font-size: 1.1rem;
         }
         
-        .badge-success {
+        .card-date {
+            font-size: 13px;
+            color: #6c757d;
+        }
+        
+        .card-body {
+            padding: 15px;
+        }
+        
+        .card-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #f1f1f1;
+        }
+        
+        .card-label {
+            font-weight: 600;
+            color: #495057;
+            font-size: 14px;
+        }
+        
+        .card-value {
+            text-align: right;
+            color: #6c757d;
+            font-size: 14px;
+        }
+        
+        .card-footer {
+            padding: 15px;
+            background: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        
+        /* ESTADO Y BADGES */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        
+        .status-good {
             background: #d4edda;
             color: #155724;
         }
         
-        .badge-warning {
-            background: #fff3cd;
-            color: #856404;
-        }
-        
-        .badge-danger {
+        .status-bad {
             background: #f8d7da;
             color: #721c24;
         }
         
+        .status-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        /* ACCIONES */
         .actions {
             display: flex;
-            gap: 5px;
+            gap: 8px;
         }
         
         .action-btn {
-            padding: 5px 10px;
-            border-radius: 3px;
-            font-size: 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 6px;
             text-decoration: none;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
         }
         
         .action-view {
@@ -198,9 +471,17 @@
             color: white;
         }
         
+        .action-view:hover {
+            background: #2980b9;
+        }
+        
         .action-edit {
             background: #f39c12;
             color: white;
+        }
+        
+        .action-edit:hover {
+            background: #e67e22;
         }
         
         .action-delete {
@@ -208,196 +489,743 @@
             color: white;
         }
         
+        .action-delete:hover {
+            background: #c0392b;
+        }
+        
+        /* PAGINACIÓN RESPONSIVE */
         .pagination {
             display: flex;
+            flex-wrap: wrap;
             justify-content: center;
-            margin-top: 30px;
             gap: 5px;
+            margin-top: 30px;
         }
         
         .page-link {
-            padding: 8px 12px;
-            border: 1px solid #ddd;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 40px;
+            height: 40px;
+            padding: 0 10px;
+            border: 1px solid #dee2e6;
             background: white;
             color: #3498db;
             text-decoration: none;
-            border-radius: 3px;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: all 0.3s;
         }
         
         .page-link:hover {
-            background: #f5f5f5;
+            background: #f8f9fa;
+            border-color: #3498db;
         }
         
         .page-link.active {
             background: #3498db;
             color: white;
             border-color: #3498db;
+            font-weight: 600;
         }
         
+        .page-link.disabled {
+            color: #6c757d;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        
+        /* EMPTY STATE */
         .empty-state {
             text-align: center;
-            padding: 50px 20px;
-            color: #666;
+            padding: 40px 20px;
+            color: #6c757d;
         }
         
-        .empty-state i {
+        .empty-icon {
             font-size: 3rem;
-            color: #ddd;
+            color: #dee2e6;
             margin-bottom: 20px;
+            display: block;
+        }
+        
+        .empty-state h3 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: #495057;
+        }
+        
+        /* LOADING STATE */
+        .loading {
+            position: relative;
+            color: transparent !important;
+        }
+        
+        .loading::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            top: 50%;
+            left: 50%;
+            margin: -10px 0 0 -10px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* SEARCH HIGHLIGHT */
+        .highlight {
+            background-color: #fff3cd;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        
+        /* RESPONSIVE UTILITIES */
+        .mobile-only {
+            display: block;
+        }
+        
+        .desktop-only {
+            display: none;
+        }
+        
+        @media (min-width: 768px) {
+            .mobile-only {
+                display: none;
+            }
+            .desktop-only {
+                display: block;
+            }
+        }
+        
+        /* PRINT STYLES */
+        @media print {
+            .btn, .header-controls, .filters-section, .actions, .pagination {
+                display: none !important;
+            }
+            
+            .container {
+                box-shadow: none;
+                border-radius: 0;
+            }
+            
+            body {
+                background: white;
+                padding: 0;
+            }
         }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <div class="container">
+        <!-- HEADER RESPONSIVE -->
         <div class="header">
-            <h1><i class="fas fa-list"></i> Inspecciones Guardadas</h1>
-            <p>Total: <%= inspecciones.length %> inspecciones registradas</p>
-            
-            <div class="header-controls">
-                <div>
-                    <a href="/" class="btn btn-back"><i class="fas fa-home"></i> Inicio</a>
-                    <a href="/inspeccion" class="btn btn-success" style="margin-left: 10px;">
-                        <i class="fas fa-plus"></i> Nueva Inspección
-                    </a>
+            <div class="header-content">
+                <div class="header-title">
+                    <h1><i class="fas fa-clipboard-check"></i> Inspecciones Guardadas</h1>
+                    <div class="header-subtitle">
+                        <span>Total: <%= inspecciones.length %> inspecciones registradas</span>
+                    </div>
                 </div>
-                <div>
-                    <a href="/exportar-inspecciones" class="btn" style="background: #6c757d;">
-                        <i class="fas fa-download"></i> Exportar
-                    </a>
+                
+                <div class="header-controls">
+                    <div class="controls-left">
+                        <a href="/" class="btn btn-back">
+                            <i class="fas fa-home"></i> <span class="mobile-only">Inicio</span>
+                            <span class="desktop-only">Inicio</span>
+                        </a>
+                        <a href="/inspeccion" class="btn btn-success">
+                            <i class="fas fa-plus"></i> <span class="mobile-only">Nueva</span>
+                            <span class="desktop-only">Nueva Inspección</span>
+                        </a>
+                    </div>
+                    <div class="controls-right">
+                        <a href="/exportar-inspecciones" class="btn btn-secondary">
+                            <i class="fas fa-download"></i> <span class="mobile-only">CSV</span>
+                            <span class="desktop-only">Exportar CSV</span>
+                        </a>
+                        <a href="/dashboard" class="btn btn-info">
+                            <i class="fas fa-chart-bar"></i> <span class="mobile-only">Stats</span>
+                            <span class="desktop-only">Dashboard</span>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
         
         <div class="content">
-            <div class="stats-bar">
-                <div>
-                    <strong>📊 Estadísticas:</strong>
-                    <span style="margin-left: 15px;">Total: <%= total %></span>
-                    <span style="margin-left: 10px; color: #27ae60;">✅ Buenas: <%= buenas %></span>
-                    <span style="margin-left: 10px; color: #e74c3c;">❌ Malas: <%= malas %></span>
+            <!-- DASHBOARD STATS -->
+            <div class="dashboard-stats">
+                <div class="stat-card">
+                    <div class="stat-title">
+                        <i class="fas fa-clipboard-list"></i>
+                        <span>Total</span>
+                    </div>
+                    <div class="stat-value"><%= total %></div>
                 </div>
-                <div>
-                    <a href="/test-db" class="btn" style="background: #17a2b8;">
-                        <i class="fas fa-database"></i> Estado BD
-                    </a>
+                
+                <div class="stat-card good">
+                    <div class="stat-title">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Aprobadas</span>
+                    </div>
+                    <div class="stat-value"><%= buenas %></div>
+                </div>
+                
+                <div class="stat-card bad">
+                    <div class="stat-title">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span>Con Defectos</span>
+                    </div>
+                    <div class="stat-value"><%= malas %></div>
+                </div>
+                
+                <div class="stat-card info">
+                    <div class="stat-title">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Página</span>
+                    </div>
+                    <div class="stat-value"><%= pagina %>/<%= paginas %></div>
                 </div>
             </div>
             
-            <div class="filters">
-                <form method="GET" action="/inspecciones">
+            <!-- FILTROS RESPONSIVE -->
+            <div class="filters-section">
+                <h3><i class="fas fa-filter"></i> Filtrar Inspecciones</h3>
+                <form method="GET" action="/inspecciones" class="filters-grid">
                     <div class="filter-group">
-                        <label><i class="fas fa-search"></i> Buscar por placa:</label>
-                        <input type="text" name="placa" placeholder="Ej: ABC123" value="<%= filtroPlaca || '' %>">
+                        <label for="placa"><i class="fas fa-car"></i> Placa</label>
+                        <input type="text" 
+                               id="placa" 
+                               name="placa" 
+                               placeholder="Ej: ABC123" 
+                               value="<%= filtroPlaca || '' %>"
+                               oninput="highlightSearch(this.value)">
                     </div>
                     
                     <div class="filter-group">
-                        <label><i class="fas fa-user"></i> Conductor:</label>
-                        <input type="text" name="conductor" placeholder="Nombre conductor" value="<%= filtroConductor || '' %>">
+                        <label for="conductor"><i class="fas fa-user"></i> Conductor</label>
+                        <input type="text" 
+                               id="conductor" 
+                               name="conductor" 
+                               placeholder="Nombre conductor" 
+                               value="<%= filtroConductor || '' %>">
                     </div>
                     
                     <div class="filter-group">
-                        <label><i class="fas fa-calendar"></i> Fecha desde:</label>
-                        <input type="date" name="fecha_desde" value="<%= filtroFechaDesde || '' %>">
+                        <label for="fecha_desde"><i class="fas fa-calendar"></i> Desde</label>
+                        <input type="date" 
+                               id="fecha_desde" 
+                               name="fecha_desde" 
+                               value="<%= filtroFechaDesde || '' %>">
                     </div>
                     
                     <div class="filter-group">
-                        <label><i class="fas fa-calendar"></i> Fecha hasta:</label>
-                        <input type="date" name="fecha_hasta" value="<%= filtroFechaHasta || '' %>">
+                        <label for="fecha_hasta"><i class="fas fa-calendar"></i> Hasta</label>
+                        <input type="date" 
+                               id="fecha_hasta" 
+                               name="fecha_hasta" 
+                               value="<%= filtroFechaHasta || '' %>">
                     </div>
                     
-                    <div class="filter-group" style="flex: 0 0 auto;">
-                        <button type="submit" class="btn" style="background: #6c757d;">
-                            <i class="fas fa-filter"></i> Filtrar
+                    <div class="filter-actions">
+                        <button type="submit" class="btn btn-secondary" style="flex: 1;">
+                            <i class="fas fa-search"></i> <span class="mobile-only">Buscar</span>
+                            <span class="desktop-only">Filtrar</span>
                         </button>
-                        <a href="/inspecciones" class="btn btn-back" style="margin-left: 5px;">
-                            <i class="fas fa-redo"></i> Limpiar
+                        <a href="/inspecciones" class="btn btn-back" style="flex: 1;">
+                            <i class="fas fa-redo"></i> <span class="mobile-only">Limpiar</span>
+                            <span class="desktop-only">Limpiar Filtros</span>
                         </a>
                     </div>
                 </form>
             </div>
             
+            <!-- LISTA DE INSPECCIONES -->
+            <div class="inspecciones-header">
+                <h2><i class="fas fa-list"></i> Inspecciones</h2>
+                <div class="results-info">
+                    Mostrando <%= inspecciones.length %> resultados
+                    <% if (filtroPlaca || filtroConductor || filtroFechaDesde || filtroFechaHasta) { %>
+                    <span class="mobile-only"> (filtrados)</span>
+                    <% } %>
+                </div>
+            </div>
+            
             <% if (inspecciones.length > 0) { %>
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Fecha</th>
-                            <th>Placa</th>
-                            <th>Conductor</th>
-                            <th>Tipo Vehículo</th>
-                            <th>Inspector</th>
-                            <th>Estado</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <% inspecciones.forEach(ins => { %>
-                        <tr>
-                            <td><strong>#<%= ins.id %></strong></td>
-                            <td><%= new Date(ins.fecha_inspeccion).toLocaleDateString('es-ES') %></td>
-                            <td>
-                                <strong><%= ins.placa %></strong>
-                                <% if (ins.otra_placa) { %>
-                                <br><small>(<%= ins.otra_placa %>)</small>
-                                <% } %>
-                            </td>
-                            <td><%= ins.nombre_conductor %></td>
-                            <td><%= ins.tipo_vehiculo %></td>
-                            <td><%= ins.nombre_elabora %></td>
-                            <td>
-                                <% 
-                                const tieneDefectos = ins.defecto_frontal || ins.defecto_trasero || 
-                                                     ins.defecto_lateral_izq || ins.defecto_lateral_der;
-                                %>
+            
+            <!-- VISTA DESKTOP (TABLA) -->
+            <div class="desktop-view">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Fecha</th>
+                                <th>Vehículo</th>
+                                <th>Conductor</th>
+                                <th>Inspector</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inspeccionesTable">
+                            <% inspecciones.forEach(ins => { %>
+                            <% 
+                            const tieneDefectos = ins.defecto_frontal || ins.defecto_trasero || 
+                                                 ins.defecto_lateral_izq || ins.defecto_lateral_der;
+                            %>
+                            <tr data-id="<%= ins.id %>" 
+                                data-placa="<%= ins.placa %>" 
+                                data-conductor="<%= ins.nombre_conductor %>">
+                                <td>
+                                    <strong>#<%= ins.id %></strong>
+                                </td>
+                                <td>
+                                    <div class="card-date">
+                                        <%= new Date(ins.fecha_inspeccion).toLocaleDateString('es-ES') %>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>
+                                        <strong class="placa-text"><%= ins.placa %></strong>
+                                        <% if (ins.otra_placa) { %>
+                                        <div><small><%= ins.otra_placa %></small></div>
+                                        <% } %>
+                                        <div style="font-size: 12px; color: #6c757d;">
+                                            <%= ins.tipo_vehiculo %>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="conductor-text"><%= ins.nombre_conductor %></div>
+                                </td>
+                                <td>
+                                    <div style="font-size: 13px;"><%= ins.nombre_elabora %></div>
+                                </td>
+                                <td>
+                                    <% if (tieneDefectos) { %>
+                                    <span class="status-badge status-bad">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                        Defectos
+                                    </span>
+                                    <% } else { %>
+                                    <span class="status-badge status-good">
+                                        <i class="fas fa-check-circle"></i>
+                                        Aprobado
+                                    </span>
+                                    <% } %>
+                                </td>
+                                <td>
+                                    <div class="actions">
+                                        <a href="/inspeccion/<%= ins.id %>" 
+                                           class="action-btn action-view"
+                                           title="Ver detalles">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a href="/inspeccion/editar/<%= ins.id %>" 
+                                           class="action-btn action-edit"
+                                           title="Editar">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a href="/inspeccion/eliminar/<%= ins.id %>" 
+                                           class="action-btn action-delete"
+                                           title="Eliminar"
+                                           onclick="return confirmDelete('<%= ins.id %>')">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- VISTA MÓVIL (CARDS) -->
+            <div class="mobile-view">
+                <div class="inspecciones-grid" id="inspeccionesGrid">
+                    <% inspecciones.forEach(ins => { %>
+                    <% 
+                    const tieneDefectos = ins.defecto_frontal || ins.defecto_trasero || 
+                                         ins.defecto_lateral_izq || ins.defecto_lateral_der;
+                    %>
+                    <div class="inspeccion-card" 
+                         data-id="<%= ins.id %>" 
+                         data-placa="<%= ins.placa %>" 
+                         data-conductor="<%= ins.nombre_conductor %>">
+                        <div class="card-header">
+                            <div class="card-id">#<%= ins.id %></div>
+                            <div class="card-date">
+                                <%= new Date(ins.fecha_inspeccion).toLocaleDateString('es-ES') %>
+                            </div>
+                        </div>
+                        
+                        <div class="card-body">
+                            <div class="card-row">
+                                <div class="card-label">
+                                    <i class="fas fa-car"></i> Placa
+                                </div>
+                                <div class="card-value">
+                                    <strong><%= ins.placa %></strong>
+                                    <% if (ins.otra_placa) { %>
+                                    <div><small><%= ins.otra_placa %></small></div>
+                                    <% } %>
+                                </div>
+                            </div>
+                            
+                            <div class="card-row">
+                                <div class="card-label">
+                                    <i class="fas fa-user"></i> Conductor
+                                </div>
+                                <div class="card-value"><%= ins.nombre_conductor %></div>
+                            </div>
+                            
+                            <div class="card-row">
+                                <div class="card-label">
+                                    <i class="fas fa-car-side"></i> Tipo
+                                </div>
+                                <div class="card-value"><%= ins.tipo_vehiculo %></div>
+                            </div>
+                            
+                            <div class="card-row">
+                                <div class="card-label">
+                                    <i class="fas fa-user-check"></i> Inspector
+                                </div>
+                                <div class="card-value"><%= ins.nombre_elabora %></div>
+                            </div>
+                        </div>
+                        
+                        <div class="card-footer">
+                            <div>
                                 <% if (tieneDefectos) { %>
-                                <span class="badge badge-danger">Con Defectos</span>
+                                <span class="status-badge status-bad">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    Con Defectos
+                                </span>
                                 <% } else { %>
-                                <span class="badge badge-success">Aprobado</span>
+                                <span class="status-badge status-good">
+                                    <i class="fas fa-check-circle"></i>
+                                    Aprobado
+                                </span>
                                 <% } %>
-                            </td>
-                            <td class="actions">
-                                <a href="/inspeccion/<%= ins.id %>" class="action-btn action-view">
-                                    <i class="fas fa-eye"></i> Ver
+                            </div>
+                            
+                            <div class="actions">
+                                <a href="/inspeccion/<%= ins.id %>" 
+                                   class="action-btn action-view"
+                                   title="Ver detalles">
+                                    <i class="fas fa-eye"></i>
                                 </a>
-                                <a href="/inspeccion/editar/<%= ins.id %>" class="action-btn action-edit">
-                                    <i class="fas fa-edit"></i> Editar
+                                <a href="/inspeccion/editar/<%= ins.id %>" 
+                                   class="action-btn action-edit"
+                                   title="Editar">
+                                    <i class="fas fa-edit"></i>
                                 </a>
                                 <a href="/inspeccion/eliminar/<%= ins.id %>" 
                                    class="action-btn action-delete"
-                                   onclick="return confirm('¿Eliminar inspección #<%= ins.id %>?')">
+                                   title="Eliminar"
+                                   onclick="return confirmDelete('<%= ins.id %>')">
                                     <i class="fas fa-trash"></i>
                                 </a>
-                            </td>
-                        </tr>
-                        <% }); %>
-                    </tbody>
-                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <% }); %>
+                </div>
             </div>
             
+            <!-- PAGINACIÓN RESPONSIVE -->
             <% if (paginas > 1) { %>
             <div class="pagination">
-                <% for (let i = 1; i <= paginas; i++) { %>
+                <% if (pagina > 1) { %>
+                <a href="/inspecciones?pagina=<%= pagina - 1 %>" class="page-link">
+                    <i class="fas fa-chevron-left"></i>
+                    <span class="desktop-only">Anterior</span>
+                </a>
+                <% } %>
+                
+                <% 
+                let startPage = Math.max(1, pagina - 2);
+                let endPage = Math.min(paginas, startPage + 4);
+                startPage = Math.max(1, endPage - 4);
+                
+                for (let i = startPage; i <= endPage; i++) { 
+                %>
                 <a href="/inspecciones?pagina=<%= i %>" 
                    class="page-link <%= pagina === i ? 'active' : '' %>">
                     <%= i %>
+                </a>
+                <% } %>
+                
+                <% if (pagina < paginas) { %>
+                <a href="/inspecciones?pagina=<%= pagina + 1 %>" class="page-link">
+                    <span class="desktop-only">Siguiente</span>
+                    <i class="fas fa-chevron-right"></i>
                 </a>
                 <% } %>
             </div>
             <% } %>
             
             <% } else { %>
+            <!-- ESTADO VACÍO -->
             <div class="empty-state">
-                <i class="fas fa-clipboard-list"></i>
+                <i class="fas fa-clipboard-list empty-icon"></i>
                 <h3>No hay inspecciones registradas</h3>
-                <p>Comienza registrando la primera inspección vehicular</p>
-                <a href="/inspeccion" class="btn btn-success" style="margin-top: 20px;">
-                    <i class="fas fa-plus"></i> Crear Primera Inspección
-                </a>
+                <p>
+                    <% if (filtroPlaca || filtroConductor || filtroFechaDesde || filtroFechaHasta) { %>
+                    No se encontraron resultados con los filtros aplicados.
+                    <% } else { %>
+                    Comienza registrando la primera inspección vehicular.
+                    <% } %>
+                </p>
+                <div style="margin-top: 20px;">
+                    <a href="/inspeccion" class="btn btn-success">
+                        <i class="fas fa-plus"></i> Crear Primera Inspección
+                    </a>
+                    <% if (filtroPlaca || filtroConductor || filtroFechaDesde || filtroFechaHasta) { %>
+                    <a href="/inspecciones" class="btn btn-back" style="margin-left: 10px;">
+                        <i class="fas fa-redo"></i> Limpiar Filtros
+                    </a>
+                    <% } %>
+                </div>
             </div>
             <% } %>
+            
+            <!-- PIE DE PÁGINA -->
+            <div style="margin-top: 30px; padding-top: 15px; border-top: 1px solid #eee; text-align: center;">
+                <div style="font-size: 12px; color: #6c757d;">
+                    <i class="fas fa-info-circle"></i> 
+                    Sistema de Gestión de Inspecciones Vehiculares
+                    <br>
+                    <small>Última actualización: <%= new Date().toLocaleString('es-ES') %></small>
+                </div>
+            </div>
         </div>
     </div>
+    
+    <script>
+        // CONFIRMACIÓN DE ELIMINACIÓN
+        function confirmDelete(id) {
+            return confirm(`¿Está seguro de eliminar la inspección #${id}?`);
+        }
+        
+        // BUSCAR Y RESALTAR EN TIEMPO REAL
+        function highlightSearch(searchTerm) {
+            const placaElements = document.querySelectorAll('.placa-text');
+            const conductorElements = document.querySelectorAll('.conductor-text');
+            
+            if (!searchTerm) {
+                // Limpiar highlights
+                placaElements.forEach(el => {
+                    el.innerHTML = el.textContent;
+                });
+                conductorElements.forEach(el => {
+                    el.innerHTML = el.textContent;
+                });
+                return;
+            }
+            
+            const regex = new RegExp(`(${searchTerm})`, 'gi');
+            
+            // Resaltar placas
+            placaElements.forEach(el => {
+                const text = el.textContent;
+                const highlighted = text.replace(regex, '<span class="highlight">$1</span>');
+                el.innerHTML = highlighted;
+            });
+            
+            // Resaltar conductores
+            conductorElements.forEach(el => {
+                const text = el.textContent;
+                const highlighted = text.replace(regex, '<span class="highlight">$1</span>');
+                el.innerHTML = highlighted;
+            });
+        }
+        
+        // EXPORTACIÓN AVANZADA
+        function exportToExcel() {
+            alert('Exportando a Excel...');
+            // Aquí puedes implementar exportación a Excel usando SheetJS
+        }
+        
+        function exportToPDF() {
+            alert('Exportando a PDF...');
+            // Aquí puedes implementar exportación a PDF usando jsPDF
+        }
+        
+        // ORDENAMIENTO DE TABLA
+        function sortTable(columnIndex) {
+            const table = document.querySelector('.table');
+            const tbody = table.querySelector('tbody');
+            const rows = Array.from(tbody.querySelectorAll('tr'));
+            
+            rows.sort((a, b) => {
+                const aValue = a.children[columnIndex].textContent.trim();
+                const bValue = b.children[columnIndex].textContent.trim();
+                
+                // Ordenar fechas
+                if (columnIndex === 1) {
+                    return new Date(aValue) - new Date(bValue);
+                }
+                
+                // Ordenar texto
+                return aValue.localeCompare(bValue);
+            });
+            
+            // Limpiar y reordenar
+            tbody.innerHTML = '';
+            rows.forEach(row => tbody.appendChild(row));
+        }
+        
+        // BÚSQUEDA RÁPIDA
+        function quickSearch() {
+            const searchTerm = document.getElementById('quickSearch').value.toLowerCase();
+            const cards = document.querySelectorAll('.inspeccion-card');
+            const rows = document.querySelectorAll('#inspeccionesTable tr');
+            
+            cards.forEach(card => {
+                const id = card.dataset.id;
+                const placa = card.dataset.placa.toLowerCase();
+                const conductor = card.dataset.conductor.toLowerCase();
+                
+                const match = id.includes(searchTerm) || 
+                             placa.includes(searchTerm) || 
+                             conductor.includes(searchTerm);
+                
+                card.style.display = match ? '' : 'none';
+            });
+            
+            rows.forEach(row => {
+                const id = row.dataset.id;
+                const placa = row.dataset.placa.toLowerCase();
+                const conductor = row.dataset.conductor.toLowerCase();
+                
+                const match = id.includes(searchTerm) || 
+                             placa.includes(searchTerm) || 
+                             conductor.includes(searchTerm);
+                
+                row.style.display = match ? '' : 'none';
+            });
+        }
+        
+        // CARGAR MÁS (SCROLL INFINITO)
+        let currentPage = <%= pagina %>;
+        let isLoading = false;
+        
+        function loadMore() {
+            if (isLoading || currentPage >= <%= paginas %>) return;
+            
+            isLoading = true;
+            const loadBtn = document.querySelector('.load-more');
+            if (loadBtn) loadBtn.classList.add('loading');
+            
+            fetch(`/inspecciones?pagina=${currentPage + 1}`)
+                .then(response => response.text())
+                .then(html => {
+                    // Extraer solo los datos nuevos y agregarlos
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    const newCards = doc.querySelectorAll('.inspeccion-card');
+                    const newRows = doc.querySelectorAll('#inspeccionesTable tr');
+                    
+                    const grid = document.querySelector('.inspecciones-grid');
+                    const tableBody = document.querySelector('#inspeccionesTable tbody');
+                    
+                    newCards.forEach(card => grid.appendChild(card));
+                    newRows.forEach(row => tableBody.appendChild(row));
+                    
+                    currentPage++;
+                })
+                .catch(error => console.error('Error:', error))
+                .finally(() => {
+                    isLoading = false;
+                    if (loadBtn) loadBtn.classList.remove('loading');
+                });
+        }
+        
+        // SCROLL INFINITO
+        window.addEventListener('scroll', () => {
+            if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 500) {
+                loadMore();
+            }
+        });
+        
+        // TOUCH SUPPORT PARA MÓVILES
+        let touchStartY = 0;
+        let touchEndY = 0;
+        
+        document.addEventListener('touchstart', e => {
+            touchStartY = e.changedTouches[0].screenY;
+        }, { passive: true });
+        
+        document.addEventListener('touchend', e => {
+            touchEndY = e.changedTouches[0].screenY;
+            const diff = touchStartY - touchEndY;
+            
+            // Deslizar hacia arriba para ver más
+            if (diff > 100) {
+                // Scroll automático ya maneja esto
+            }
+        }, { passive: true });
+        
+        // MEJORAR ACCESIBILIDAD
+        document.addEventListener('keydown', e => {
+            // Atajo Ctrl+F para buscar
+            if (e.ctrlKey && e.key === 'f') {
+                e.preventDefault();
+                document.getElementById('placa').focus();
+            }
+            
+            // Escape para limpiar
+            if (e.key === 'Escape') {
+                const searchInput = document.getElementById('placa');
+                if (searchInput && searchInput.value) {
+                    searchInput.value = '';
+                    highlightSearch('');
+                }
+            }
+        });
+        
+        // INICIALIZAR
+        document.addEventListener('DOMContentLoaded', function() {
+            // Auto-focus en búsqueda si hay filtro
+            if (document.getElementById('placa').value) {
+                document.getElementById('placa').focus();
+            }
+            
+            // Añadir listener a todos los botones de filtro
+            document.querySelectorAll('.filter-group input').forEach(input => {
+                input.addEventListener('keypress', e => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        document.querySelector('form').submit();
+                    }
+                });
+            });
+        });
+        
+        // IMPRIMIR REPORTE
+        function printReport() {
+            window.print();
+        }
+        
+        // COMPARTIR POR WHATSAPP
+        function shareViaWhatsApp() {
+            const url = window.location.href;
+            const text = `Listado de Inspecciones Vehiculares - ${new Date().toLocaleDateString('es-ES')}`;
+            const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text + ' ' + url)}`;
+            window.open(whatsappUrl, '_blank');
+        }
+    </script>
 </body>
 </html>
