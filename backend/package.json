@@ -10,7 +10,7 @@
     "setup-db": "node scripts/setup-database.js",
     "backup": "node scripts/backup-database.js"
   },
-  "author": "Tu Nombre",
+  "author": "miguel acevedo",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.20.2",
