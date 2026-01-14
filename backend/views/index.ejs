@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= title %> - <%= appName %></title>
+    
     <style>
         * {
             margin: 0;
@@ -27,15 +28,46 @@
         }
         
         .header {
-            background: linear-gradient(135deg, #2c3e50, #4a6491);
+            background: linear-gradient(135deg, #b6b6b6, #8d8d8d);
             color: white;
-            padding: 30px;
+            padding: 20px;
             text-align: center;
         }
         
-        .header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
+        /* ESTILOS PARA EL LOGO */
+        .logo-container {
+            text-align: center;
+            padding: 15px;
+        }
+        
+        .logo {
+            max-width: 180px;  /* Ajusta este tamaño según tu logo */
+            height: auto;
+            margin-bottom: 15px;
+        }
+        
+        .header-text {
+            text-align: center;
+        }
+        
+        .header-text h1 {
+            color: white;
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+        }
+        
+        .version {
+            color: #fcfcfc;
+            font-size: 1rem;
+            font-weight: bold;
+            margin: 5px 0;
+        }
+        
+        .departamento {
+            color: #fafafa;
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-top: 8px;
         }
         
         .menu {
@@ -95,19 +127,26 @@
 </head>
 <body>
     <div class="container">
+        <!-- ✅ HEADER CORREGIDO CON LOGO -->
         <div class="header">
-            <h1>🚗 <%= appName %></h1>
-            <p>Formato: <%= formatoCodigo %> | Versión: <%= appVersion %></p>
-            <p>Gestión del Talento Humano</p>
+            <div class="logo-container">
+                <!-- 🔥 RUTA CORREGIDA -->
+                <img src="/images/logo.png" alt="OmegaGroup" class="logo">
+            </div>
+            <div class="header-text">
+                <h1>Sistema de Inspección Vehicular</h1>
+                <p class="version">Versión: 1.0</p>
+                <p class="departamento">Gestión Operativa OmegaGroup</p>
+            </div>
         </div>
         
-        <!-- Dentro del menú, agrega esto: -->
-<div class="menu" style="text-align: center;">
-    <a href="/inspeccion" class="btn" style="margin: 10px;">📝 Nueva Inspección</a>
-    <a href="/inspecciones" class="btn" style="margin: 10px;">📋 Ver Inspecciones</a>  <!-- NUEVO -->
-    <a href="/test-db" class="btn" style="margin: 10px;">🔧 Probar Conexión BD</a>
-    <a href="/dashboard" class="btn" style="margin: 10px; background: #9b59b6;">📊 Dashboard</a>  <!-- NUEVO -->
-</div>
+        <!-- MENÚ DE OPCIONES -->
+        <div class="menu" style="text-align: center;">
+            <a href="/inspeccion" class="btn" style="margin: 10px;">📝 Nueva Inspección</a>
+            <a href="/inspecciones" class="btn" style="margin: 10px;">📋 Ver Inspecciones</a>
+            <a href="/test-db" class="btn" style="margin: 10px;">🔧 Probar Conexión BD</a>
+            <a href="/dashboard" class="btn" style="margin: 10px; background: #9b59b6;">📊 Dashboard</a>
+        </div>
         
         <footer>
             <p>© <%= year %> - Sistema de Inspección Vehicular</p>
