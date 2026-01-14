@@ -4,133 +4,141 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= title %> - <%= appName %></title>
-    
+
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
-        }
-        
-        body {
-            background-color: #f0f2f5;
-            padding: 20px;
-        }
-        
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            overflow: hidden;
-        }
-        
-        .header {
-            background: linear-gradient(135deg, #b6b6b6, #8d8d8d);
-            color: white;
-            padding: 20px;
-            text-align: center;
-        }
-        
-        /* ESTILOS PARA EL LOGO */
-        .logo-container {
-            text-align: center;
-            padding: 15px;
-        }
-        
-        .logo {
-            max-width: 180px;  /* Ajusta este tamaño según tu logo */
-            height: auto;
-            margin-bottom: 15px;
-        }
-        
-        .header-text {
-            text-align: center;
-        }
-        
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Roboto, Arial, sans-serif;
+    }
+
+    body {
+        background: #f2f4f7;
+        padding: 30px;
+        color: #2d2d2d;
+    }
+
+    .container {
+        max-width: 1100px;
+        margin: auto;
+        background: #ffffff;
+        border-radius: 14px;
+        box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+        overflow: hidden;
+    }
+
+    /* ================= HEADER ================= */
+    .header {
+        background: linear-gradient(180deg, #f9fafb, #eef1f5);
+        padding: 40px 20px 30px;
+        text-align: center;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    /* ===== CONTENEDOR DE LOGO (CLAVE) ===== */
+    .logo-container {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: #ffffff;
+        padding: 18px 26px;
+        border-radius: 14px;
+        box-shadow: 0 8px 22px rgba(0,0,0,0.12);
+        margin-bottom: 18px;
+    }
+
+    .logo {
+        max-width: 170px;
+        height: auto;
+        display: block;
+    }
+
+    .header-text h1 {
+        font-size: 1.85rem;
+        font-weight: 600;
+        color: #1f2937;
+        margin-bottom: 6px;
+    }
+
+    .version {
+        font-size: 0.95rem;
+        color: #6b7280;
+        font-weight: 600;
+    }
+
+    .departamento {
+        margin-top: 4px;
+        font-size: 1rem;
+        color: #374151;
+        font-weight: 500;
+    }
+
+    /* ================= MENU ================= */
+    .menu {
+        padding: 45px 30px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 22px;
+    }
+
+    .btn {
+        background: #ffffff;
+        color: #1f2937;
+        border-radius: 12px;
+        padding: 28px 22px;
+        text-decoration: none;
+        font-size: 1.05rem;
+        font-weight: 600;
+        text-align: center;
+        border: 1px solid #e5e7eb;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+        transition: all 0.25s ease;
+    }
+
+    .btn:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 14px 28px rgba(0,0,0,0.14);
+        border-color: #c62828;
+        color: #c62828;
+    }
+
+    /* ================= FOOTER ================= */
+    footer {
+        padding: 22px;
+        text-align: center;
+        font-size: 0.85rem;
+        color: #6b7280;
+        background: #fafafa;
+        border-top: 1px solid #e5e7eb;
+    }
+
+    footer p:first-child {
+        font-weight: 600;
+        margin-bottom: 4px;
+        color: #374151;
+    }
+
+    /* ================= RESPONSIVE ================= */
+    @media (max-width: 600px) {
         .header-text h1 {
-            color: white;
-            font-size: 1.8rem;
-            margin-bottom: 8px;
+            font-size: 1.55rem;
         }
-        
-        .version {
-            color: #fcfcfc;
-            font-size: 1rem;
-            font-weight: bold;
-            margin: 5px 0;
+
+        .logo {
+            max-width: 140px;
         }
-        
-        .departamento {
-            color: #fafafa;
-            font-size: 1.1rem;
-            font-weight: bold;
-            margin-top: 8px;
-        }
-        
-        .menu {
-            padding: 40px;
-            text-align: center;
-        }
-        
-        .btn {
-            display: inline-block;
-            background: #3498db;
-            color: white;
-            padding: 15px 30px;
-            margin: 10px;
-            border-radius: 5px;
-            text-decoration: none;
-            font-size: 1.1rem;
-            transition: background 0.3s;
-            border: none;
-            cursor: pointer;
-        }
-        
-        .btn:hover {
-            background: #2980b9;
-        }
-        
-        .btn-success {
-            background: #27ae60;
-        }
-        
-        .btn-success:hover {
-            background: #219653;
-        }
-        
-        .btn-warning {
-            background: #f39c12;
-        }
-        
-        .btn-warning:hover {
-            background: #e67e22;
-        }
-        
-        .info-box {
-            background: #f8f9fa;
-            padding: 20px;
-            margin: 20px;
-            border-radius: 5px;
-            border-left: 5px solid #3498db;
-        }
-        
-        footer {
-            text-align: center;
-            padding: 20px;
-            color: #666;
-            border-top: 1px solid #eee;
-        }
-    </style>
+    }
+</style>
+
+
+
 </head>
+
 <body>
     <div class="container">
-        <!-- ✅ HEADER CORREGIDO CON LOGO -->
         <div class="header">
             <div class="logo-container">
-                <!-- 🔥 RUTA CORREGIDA -->
                 <img src="/images/logo.png" alt="OmegaGroup" class="logo">
             </div>
             <div class="header-text">
@@ -139,15 +147,14 @@
                 <p class="departamento">Gestión Operativa OmegaGroup</p>
             </div>
         </div>
-        
-        <!-- MENÚ DE OPCIONES -->
-        <div class="menu" style="text-align: center;">
-            <a href="/inspeccion" class="btn" style="margin: 10px;">📝 Nueva Inspección</a>
-            <a href="/inspecciones" class="btn" style="margin: 10px;">📋 Ver Inspecciones</a>
-            <a href="/test-db" class="btn" style="margin: 10px;">🔧 Probar Conexión BD</a>
-            <a href="/dashboard" class="btn" style="margin: 10px; background: #9b59b6;">📊 Dashboard</a>
+
+        <div class="menu">
+            <a href="/inspeccion" class="btn">📝 Nueva Inspección</a>
+            <a href="/inspecciones" class="btn btn-success">📋 Ver Inspecciones</a>
+            <a href="/test-db" class="btn btn-warning">🔧 Probar Conexión BD</a>
+            <a href="/dashboard" class="btn btn-dashboard">📊 Dashboard</a>
         </div>
-        
+
         <footer>
             <p>© <%= year %> - Sistema de Inspección Vehicular</p>
             <p>Desarrollado para cumplimiento del formato <%= formatoCodigo %></p>
