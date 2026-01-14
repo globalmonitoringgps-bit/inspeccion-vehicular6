@@ -668,6 +668,453 @@ app.get('/inspecciones', async (req, res) => {
 });
 
 // ============================================
+// VER DETALLE DE UNA INSPECCIÓN
+// ============================================
+app.get('/inspeccion/:id', async (req, res) => {
+    try {
+        const { executeQuery } = require('./db/connection');
+        const inspeccionId = req.params.id;
+        
+        console.log(`🔍 Buscando inspección ID: ${inspeccionId}`);
+        
+        // Consulta para obtener todos los datos de la inspección
+        const query = `
+            SELECT * FROM Inspecciones 
+            WHERE id = ? AND activo = 1
+        `;
+        
+        const result = await executeQuery(query, [inspeccionId]);
+        
+        if (result.length === 0) {
+            return res.status(404).render('error', {
+                title: 'No encontrado',
+                message: 'Inspección no encontrada o eliminada'
+            });
+        }
+        
+        const inspeccion = result[0];
+        
+        // Formatear fechas para la vista
+        const formatDate = (dateStr) => {
+            if (!dateStr) return '';
+            return new Date(dateStr).toLocaleDateString('es-ES');
+        };
+        
+        res.render('inspeccion-detalle', {
+            title: `Inspección #${inspeccionId}`,
+            inspeccion: inspeccion,
+            formatDate: formatDate
+        });
+        
+    } catch (error) {
+        console.error('❌ Error al cargar inspección:', error);
+        res.render('error', {
+            title: 'Error',
+            message: 'No se pudo cargar la inspección',
+            error: process.env.NODE_ENV === 'development' ? error : {}
+        });
+    }
+});
+
+// ============================================
+// MOSTRAR FORMULARIO PARA EDITAR INSPECCIÓN
+// ============================================
+app.get('/inspeccion/editar/:id', async (req, res) => {
+    try {
+        const { executeQuery } = require('./db/connection');
+        const inspeccionId = req.params.id;
+        
+        console.log(`✏️ Editando inspección ID: ${inspeccionId}`);
+        
+        // Consulta para obtener la inspección
+        const query = `
+            SELECT * FROM Inspecciones 
+            WHERE id = ? AND activo = 1
+        `;
+        
+        const result = await executeQuery(query, [inspeccionId]);
+        
+        if (result.length === 0) {
+            return res.status(404).render('error', {
+                title: 'No encontrado',
+                message: 'Inspección no encontrada o eliminada'
+            });
+        }
+        
+        const inspeccion = result[0];
+        
+        // Convertir 1/0 a 'on' para checkboxes
+        const defectos = {
+            frontal: inspeccion.defecto_frontal ? 'checked' : '',
+            trasero: inspeccion.defecto_trasero ? 'checked' : '',
+            lateral_izq: inspeccion.defecto_lateral_izq ? 'checked' : '',
+            lateral_der: inspeccion.defecto_lateral_der ? 'checked' : '',
+            techo: inspeccion.defecto_techo ? 'checked' : '',
+            interior: inspeccion.defecto_interior ? 'checked' : '',
+            motor: inspeccion.defecto_motor ? 'checked' : '',
+            chasis: inspeccion.defecto_chasis ? 'checked' : ''
+        };
+        
+        // Convertir aceptaciones
+        const aceptaciones = {
+            conductor: inspeccion.aceptacion_conductor ? 'checked' : '',
+            coordinador: inspeccion.aceptacion_coordinador ? 'checked' : ''
+        };
+        
+        res.render('inspeccion-editar', {
+            title: `Editar Inspección #${inspeccionId}`,
+            inspeccion: inspeccion,
+            defectos: defectos,
+            aceptaciones: aceptaciones,
+            today: new Date().toISOString().split('T')[0],
+            appName: 'Sistema de Inspección Vehicular'
+        });
+        
+    } catch (error) {
+        console.error('❌ Error al cargar formulario de edición:', error);
+        res.render('error', {
+            title: 'Error',
+            message: 'No se pudo cargar el formulario de edición',
+            error: process.env.NODE_ENV === 'development' ? error : {}
+        });
+    }
+});
+
+// ============================================
+// ACTUALIZAR INSPECCIÓN EXISTENTE
+// ============================================
+app.post('/inspeccion/editar/:id', async (req, res) => {
+    console.log('\n' + '='.repeat(80));
+    console.log(`✏️ ACTUALIZANDO INSPECCIÓN ID: ${req.params.id}`);
+    console.log('='.repeat(80));
+    
+    let connection;
+    
+    try {
+        const { createPool } = require('./db/connection');
+        const pool = await createPool();
+        connection = await pool.getConnection();
+        
+        // Procesar datos (similar a la ruta POST original)
+        let placaFinal = req.body.placa;
+        let otraPlaca = null;
+        
+        if (req.body.placa === 'OTRO' && req.body.otra_placa) {
+            placaFinal = req.body.otra_placa.toUpperCase();
+            otraPlaca = placaFinal;
+        }
+        
+        // Procesar defectos
+        const defectos = {
+            frontal: req.body.defecto_frontal === 'on' ? 1 : 0,
+            trasero: req.body.defecto_trasero === 'on' ? 1 : 0,
+            lateral_izq: req.body.defecto_lateral_izq === 'on' ? 1 : 0,
+            lateral_der: req.body.defecto_lateral_der === 'on' ? 1 : 0,
+            techo: req.body.defecto_techo === 'on' ? 1 : 0,
+            interior: req.body.defecto_interior === 'on' ? 1 : 0,
+            motor: req.body.defecto_motor === 'on' ? 1 : 0,
+            chasis: req.body.defecto_chasis === 'on' ? 1 : 0
+        };
+        
+        // Procesar aceptaciones
+        const aceptaciones = {
+            conductor: req.body.aceptacion_conductor === 'on' ? 1 : 0,
+            coordinador: req.body.aceptacion_coordinador === 'on' ? 1 : 0
+        };
+        
+        // Helper function
+        const getValue = (field, defaultValue = null) => {
+            const value = req.body[field];
+            if (value === undefined || value === '') {
+                return defaultValue;
+            }
+            return value;
+        };
+        
+        // SQL de UPDATE (similar al INSERT pero actualizando)
+        const updateSQL = `
+            UPDATE Inspecciones SET
+                fecha_inspeccion = ?,
+                placa = ?,
+                otra_placa = ?,
+                nombre_conductor = ?,
+                tipo_vehiculo = ?,
+                modelo = ?,
+                numero_tarjeta = ?,
+                licencia_conductor = ?,
+                fecha_revision = ?,
+                fecha_vencimiento_soat = ?,
+                fecha_cambio_aceite = ?,
+                fecha_mantenimiento = ?,
+                kilometraje = ?,
+                
+                defecto_frontal = ?,
+                defecto_trasero = ?,
+                defecto_lateral_izq = ?,
+                defecto_lateral_der = ?,
+                defecto_techo = ?,
+                defecto_interior = ?,
+                defecto_motor = ?,
+                defecto_chasis = ?,
+                descripcion_defecto = ?,
+                
+                nivel_refrigerante = ?,
+                nivel_frenos = ?,
+                nivel_aceite = ?,
+                nivel_hidraulico = ?,
+                nivel_agua = ?,
+                obs_nivel_refrigerante = ?,
+                obs_nivel_frenos = ?,
+                obs_nivel_aceite = ?,
+                obs_nivel_hidraulico = ?,
+                obs_nivel_agua = ?,
+                
+                pedal_acelerador = ?,
+                pedal_clutch = ?,
+                pedal_freno = ?,
+                obs_pedal_acelerador = ?,
+                obs_pedal_clutch = ?,
+                obs_pedal_freno = ?,
+                
+                luz_principales = ?,
+                luz_direccionales = ?,
+                luz_estacionarias = ?,
+                luz_stops = ?,
+                luz_testigos = ?,
+                luz_reversa = ?,
+                luz_internas = ?,
+                obs_luz_principales = ?,
+                obs_luz_direccionales = ?,
+                obs_luz_estacionarias = ?,
+                obs_luz_stops = ?,
+                obs_luz_testigos = ?,
+                obs_luz_reversa = ?,
+                obs_luz_internas = ?,
+                
+                equipo_extintor = ?,
+                equipo_fecha_extintor = ?,
+                equipo_llanta = ?,
+                equipo_cruceta = ?,
+                equipo_senales = ?,
+                equipo_tacos = ?,
+                equipo_herramientas = ?,
+                equipo_linterna = ?,
+                equipo_gato = ?,
+                equipo_botiquin = ?,
+                obs_equipo_extintor = ?,
+                obs_equipo_fecha_extintor = ?,
+                obs_equipo_llanta = ?,
+                obs_equipo_cruceta = ?,
+                obs_equipo_senales = ?,
+                obs_equipo_tacos = ?,
+                obs_equipo_herramientas = ?,
+                obs_equipo_linterna = ?,
+                obs_equipo_gato = ?,
+                obs_equipo_botiquin = ?,
+                
+                varios_llantas = ?,
+                varios_bateria = ?,
+                varios_rines = ?,
+                varios_cinturones = ?,
+                varios_pito_reversa = ?,
+                varios_pito = ?,
+                varios_freno_emergencia = ?,
+                varios_espejos = ?,
+                varios_carcasa = ?,
+                varios_plumillas = ?,
+                varios_tapizado = ?,
+                varios_panoramico = ?,
+                obs_varios_llantas = ?,
+                obs_varios_bateria = ?,
+                obs_varios_rines = ?,
+                obs_varios_cinturones = ?,
+                obs_varios_pito_reversa = ?,
+                obs_varios_pito = ?,
+                obs_varios_freno_emergencia = ?,
+                obs_varios_espejos = ?,
+                obs_varios_carcasa = ?,
+                obs_varios_plumillas = ?,
+                obs_varios_tapizado = ?,
+                obs_varios_panoramico = ?,
+                
+                observaciones_generales = ?,
+                nombre_elabora = ?,
+                nombre_firma_conductor = ?,
+                cc_conductor = ?,
+                aceptacion_conductor = ?,
+                firma_coordinador = ?,
+                cc_coordinador = ?,
+                aceptacion_coordinador = ?                
+                
+            WHERE id = ? AND activo = 1
+        `;
+        
+        // Parámetros para el UPDATE
+        const params = [
+            // Información básica (13)
+            getValue('fecha_inspeccion'),
+            placaFinal,
+            otraPlaca,
+            getValue('nombre_conductor'),
+            getValue('tipo_vehiculo'),
+            getValue('modelo'),
+            getValue('numero_tarjeta'),
+            getValue('licencia_conductor'),
+            getValue('fecha_revision') || null,
+            getValue('fecha_vencimiento_soat') || null,
+            getValue('fecha_cambio_aceite') || null,
+            getValue('fecha_mantenimiento'),
+            getValue('kilometraje') || null,
+            
+            // Defectos (9)
+            defectos.frontal,
+            defectos.trasero,
+            defectos.lateral_izq,
+            defectos.lateral_der,
+            defectos.techo,
+            defectos.interior,
+            defectos.motor,
+            defectos.chasis,
+            getValue('descripcion_defecto') || null,
+            
+            // Niveles (10)
+            getValue('nivel_refrigerante', 'NA'),
+            getValue('nivel_frenos', 'NA'),
+            getValue('nivel_aceite', 'NA'),
+            getValue('nivel_hidraulico', 'NA'),
+            getValue('nivel_agua', 'NA'),
+            getValue('obs_nivel_refrigerante') || null,
+            getValue('obs_nivel_frenos') || null,
+            getValue('obs_nivel_aceite') || null,
+            getValue('obs_nivel_hidraulico') || null,
+            getValue('obs_nivel_agua') || null,
+            
+            // Pedales (6)
+            getValue('pedal_acelerador', 'NA'),
+            getValue('pedal_clutch', 'NA'),
+            getValue('pedal_freno', 'NA'),
+            getValue('obs_pedal_acelerador') || null,
+            getValue('obs_pedal_clutch') || null,
+            getValue('obs_pedal_freno') || null,
+            
+            // Luces (14)
+            getValue('luz_principales', 'NA'),
+            getValue('luz_direccionales', 'NA'),
+            getValue('luz_estacionarias', 'NA'),
+            getValue('luz_stops', 'NA'),
+            getValue('luz_testigos', 'NA'),
+            getValue('luz_reversa', 'NA'),
+            getValue('luz_internas', 'NA'),
+            getValue('obs_luz_principales') || null,
+            getValue('obs_luz_direccionales') || null,
+            getValue('obs_luz_estacionarias') || null,
+            getValue('obs_luz_stops') || null,
+            getValue('obs_luz_testigos') || null,
+            getValue('obs_luz_reversa') || null,
+            getValue('obs_luz_internas') || null,
+            
+            // Equipo (20)
+            getValue('equipo_extintor', 'NA'),
+            getValue('equipo_fecha_extintor', 'NA'),
+            getValue('equipo_llanta', 'NA'),
+            getValue('equipo_cruceta', 'NA'),
+            getValue('equipo_senales', 'NA'),
+            getValue('equipo_tacos', 'NA'),
+            getValue('equipo_herramientas', 'NA'),
+            getValue('equipo_linterna', 'NA'),
+            getValue('equipo_gato', 'NA'),
+            getValue('equipo_botiquin', 'NA'),
+            getValue('obs_equipo_extintor') || null,
+            getValue('obs_equipo_fecha_extintor') || null,
+            getValue('obs_equipo_llanta') || null,
+            getValue('obs_equipo_cruceta') || null,
+            getValue('obs_equipo_senales') || null,
+            getValue('obs_equipo_tacos') || null,
+            getValue('obs_equipo_herramientas') || null,
+            getValue('obs_equipo_linterna') || null,
+            getValue('obs_equipo_gato') || null,
+            getValue('obs_equipo_botiquin') || null,
+            
+            // Varios (24)
+            getValue('varios_llantas', 'NA'),
+            getValue('varios_bateria', 'NA'),
+            getValue('varios_rines', 'NA'),
+            getValue('varios_cinturones', 'NA'),
+            getValue('varios_pito_reversa', 'NA'),
+            getValue('varios_pito', 'NA'),
+            getValue('varios_freno_emergencia', 'NA'),
+            getValue('varios_espejos', 'NA'),
+            getValue('varios_carcasa', 'NA'),
+            getValue('varios_plumillas', 'NA'),
+            getValue('varios_tapizado', 'NA'),
+            getValue('varios_panoramico', 'NA'),
+            getValue('obs_varios_llantas') || null,
+            getValue('obs_varios_bateria') || null,
+            getValue('obs_varios_rines') || null,
+            getValue('obs_varios_cinturones') || null,
+            getValue('obs_varios_pito_reversa') || null,
+            getValue('obs_varios_pito') || null,
+            getValue('obs_varios_freno_emergencia') || null,
+            getValue('obs_varios_espejos') || null,
+            getValue('obs_varios_carcasa') || null,
+            getValue('obs_varios_plumillas') || null,
+            getValue('obs_varios_tapizado') || null,
+            getValue('obs_varios_panoramico') || null,
+            
+            // Observaciones y firmas (8)
+            getValue('observaciones_generales') || null,
+            getValue('nombre_elabora'),
+            getValue('nombre_firma_conductor') || null,
+            getValue('cc_conductor') || null,
+            aceptaciones.conductor,
+            getValue('firma_coordinador') || null,
+            getValue('cc_coordinador') || null,
+            aceptaciones.coordinador,
+            
+            // Fecha de actualización + ID al final (2)            
+            req.params.id
+        ];
+        
+        // Ejecutar UPDATE
+        console.log('💾 Actualizando en base de datos...');
+        const [result] = await connection.execute(updateSQL, params);
+        
+        // Liberar conexión
+        connection.release();
+        
+        if (result.affectedRows === 0) {
+            throw new Error('No se pudo actualizar la inspección (no encontrada o ya eliminada)');
+        }
+        
+        console.log(`✅ Inspección #${req.params.id} actualizada correctamente`);
+        console.log(`📋 Filas afectadas: ${result.affectedRows}`);
+        console.log('='.repeat(80));
+        
+        // Redirigir al detalle de la inspección actualizada
+        res.redirect(`/inspeccion/${req.params.id}`);
+        
+    } catch (error) {
+        console.error('❌ ERROR al actualizar inspección:', error.message);
+        console.error('Stack:', error.stack);
+        
+        if (connection) {
+            try {
+                connection.release();
+            } catch (e) {
+                console.error('Error al liberar conexión:', e.message);
+            }
+        }
+        
+        res.render('error', {
+            title: 'Error al Actualizar',
+            message: 'No se pudo actualizar la inspección',
+            error: process.env.NODE_ENV === 'development' ? error : {}
+        });
+    }
+});
+
+
+// ============================================
 // ARCHIVOS ESTÁTICOS (CSS/JS)
 // ============================================
 

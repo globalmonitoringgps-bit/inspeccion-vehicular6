@@ -1,0 +1,1809 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title><%= title %> - <%= appName %></title>
+    <style>
+        /* RESET Y BASE RESPONSIVE */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f0f2f5;
+            padding: 10px;
+            font-size: 16px;
+            line-height: 1.5;
+            -webkit-text-size-adjust: 100%;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        /* CONTAINER RESPONSIVE */
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        /* HEADER RESPONSIVE */
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #4a6491);
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+            line-height: 1.2;
+        }
+        
+        .header-info {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 8px;
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+        
+        /* BOTONES RESPONSIVE */
+        .btn {
+            display: inline-block;
+            background: #3498db;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            transition: background 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            text-align: center;
+            width: 100%;
+            margin: 5px 0;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+        
+        .btn:hover {
+            background: #2980b9;
+        }
+        
+        .btn-back {
+            background: #7f8c8d;
+        }
+        
+        .btn-back:hover {
+            background: #666;
+        }
+        
+        .btn-submit {
+            background: #27ae60;
+            padding: 16px;
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+        
+        .btn-submit:hover {
+            background: #219653;
+        }
+        
+        .form-container {
+            padding: 15px;
+        }
+        
+        /* INFORMACIÓN BÁSICA - RESPONSIVE */
+        .form-section {
+            margin-bottom: 25px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .form-section h2 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #ddd;
+            font-size: 1.2rem;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+        
+        @media (min-width: 768px) {
+            .info-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 14px;
+        }
+        
+        .required::after {
+            content: " *";
+            color: #e74c3c;
+        }
+        
+        .form-group input[type="text"],
+        .form-group input[type="date"],
+        .form-group input[type="number"],
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            background: #fff;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+        
+        .form-group select {
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 1em;
+            padding-right: 40px;
+        }
+        
+        /* SECCIÓN DEFECTOS - RESPONSIVE */
+        .defectos-section {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .defectos-section h3 {
+            color: #721c24;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+        
+        .checkbox-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        @media (min-width: 480px) {
+            .checkbox-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            background: white;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .checkbox-item label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            width: 100%;
+            font-size: 14px;
+        }
+        
+        .checkbox-item input[type="checkbox"] {
+            margin-right: 8px;
+            transform: scale(1.3);
+            accent-color: #e74c3c;
+        }
+        
+        .defecto-descripcion {
+            margin-top: 15px;
+        }
+        
+        /* TABLAS DE CHEQUEO - RESPONSIVE */
+        .chequeo-section {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .chequeo-categoria {
+            background: #2c3e50;
+            color: white;
+            padding: 12px 15px;
+            border-radius: 6px;
+            margin: 20px 0 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+        
+        .chequeo-item {
+            background: white;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 6px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .chequeo-item label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #34495e;
+            font-size: 14px;
+        }
+        
+        .radio-group-responsive {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 5px;
+            margin: 10px 0;
+        }
+        
+        .radio-option-responsive {
+            text-align: center;
+        }
+        
+        .radio-option-responsive input[type="radio"] {
+            display: none;
+        }
+        
+        .radio-option-responsive label {
+            display: block;
+            padding: 10px 5px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 12px;
+            font-weight: normal;
+            margin-bottom: 0;
+        }
+        
+        @media (min-width: 480px) {
+            .radio-option-responsive label {
+                font-size: 14px;
+                padding: 12px 5px;
+            }
+        }
+        
+        .radio-option-responsive input[type="radio"]:checked + label {
+            border-color: #3498db;
+            background: #3498db;
+            color: white;
+            font-weight: 600;
+        }
+        
+        .radio-option-responsive label.bueno {
+            border-color: #d4edda;
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .radio-option-responsive label.malo {
+            border-color: #f8d7da;
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .radio-option-responsive label.na {
+            border-color: #fff3cd;
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .obs-input {
+            margin-top: 12px;
+        }
+        
+        .obs-input textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            resize: vertical;
+            min-height: 60px;
+        }
+        
+        /* NOTAS */
+        .note {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+            font-size: 14px;
+        }
+        
+        .note strong {
+            color: #856404;
+        }
+        
+        /* DECLARACIÓN Y FIRMAS - RESPONSIVE */
+        .firmas-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        @media (min-width: 768px) {
+            .firmas-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        .firma-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .firma-card h4 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #ddd;
+            font-size: 1rem;
+        }
+        
+        /* BOTONES FINALES - RESPONSIVE */
+        .buttons {
+            text-align: center;
+            margin: 30px 0 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        @media (min-width: 480px) {
+            .btn-group {
+                flex-direction: row;
+                justify-content: center;
+            }
+            
+            .btn-group .btn {
+                width: auto;
+                min-width: 150px;
+            }
+        }
+        
+        /* MEJORAS PARA MÓVILES */
+        input, select, textarea, button {
+            font-size: 16px !important;
+        }
+        
+        /* LOADING STATE */
+        .btn.loading {
+            position: relative;
+            color: transparent;
+        }
+        
+        .btn.loading::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            top: 50%;
+            left: 50%;
+            margin: -10px 0 0 -10px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* DIAGRAMA DEL VEHÍCULO */
+        .vehiculo-diagrama {
+            text-align: center;
+            margin: 20px 0;
+            padding: 15px;
+            background: white;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+        }
+        
+        .diagrama-icono {
+            font-size: 48px;
+            margin: 10px 0;
+        }
+        
+        /* HELPERS */
+        .hidden-desktop {
+            display: none;
+        }
+        
+        @media (max-width: 767px) {
+            .hidden-mobile {
+                display: none;
+            }
+            
+            .hidden-desktop {
+                display: block;
+            }
+        }
+        
+        /* MEJORAS VISUALES */
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+            outline: none;
+        }
+        
+        /* SCROLL SUAVE PARA MÓVILES */
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-clipboard-check"></i> <%= title %></h1>
+            <p>FORMATO SST: INSPECCIÓN DE VEHÍCULOS</p>
+            <div class="header-info">
+                <span><i class="fas fa-code"></i> <%= formatoCodigo %></span>
+                <span><i class="fas fa-calendar"></i> <%= new Date().toLocaleDateString('es-ES') %></span>
+                <span><i class="fas fa-user-tie"></i> Gestión Operativa</span>
+            </div>
+            <div style="margin-top: 10px;">
+                <a href="/inspecciones" class="btn btn-back"><i class="fas fa-arrow-left"></i> Volver a la Lista</a>
+            </div>
+        </div>
+        
+        <form action="/inspeccion/editar/<%= inspeccion.id %>" method="POST" class="form-container" id="inspeccionForm">
+            <!-- =========================================== -->
+            <!-- SECCIÓN 1: INFORMACIÓN BÁSICA (RESPONSIVE) -->
+            <!-- =========================================== -->
+            <div class="form-section">
+                <h2><i class="fas fa-info-circle"></i> INFORMACIÓN DEL VEHÍCULO Y CONDUCTOR</h2>
+                
+                <div class="info-grid">
+                    <div class="form-group">
+                        <label for="fecha_inspeccion" class="required">Fecha de Inspección:</label>
+                        <input type="date" id="fecha_inspeccion" name="fecha_inspeccion" 
+                               value="<%= inspeccion.fecha_inspeccion ? new Date(inspeccion.fecha_inspeccion).toISOString().split('T')[0] : today %>" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="tipo_vehiculo">Tipo de vehículo:</label>
+                        <select name="tipo_vehiculo" id="tipo_vehiculo">
+                            <option value="">Seleccionar</option>
+                            <option value="Automóvil" <%= inspeccion.tipo_vehiculo === 'Automóvil' ? 'selected' : '' %>>Automóvil</option>
+                            <option value="Camioneta" <%= inspeccion.tipo_vehiculo === 'Camioneta' ? 'selected' : '' %>>Camioneta</option>
+                            <option value="Camión" <%= inspeccion.tipo_vehiculo === 'Camión' ? 'selected' : '' %>>Camión</option>
+                            <option value="Bus" <%= inspeccion.tipo_vehiculo === 'Bus' ? 'selected' : '' %>>Bus</option>
+                            <option value="Motocicleta" <%= inspeccion.tipo_vehiculo === 'Motocicleta' ? 'selected' : '' %>>Motocicleta</option>
+                            <option value="Volqueta" <%= inspeccion.tipo_vehiculo === 'Volqueta' ? 'selected' : '' %>>Volqueta</option>
+                            <option value="Grúa" <%= inspeccion.tipo_vehiculo === 'Grúa' ? 'selected' : '' %>>Grúa</option>
+                            <option value="Otro" <%= inspeccion.tipo_vehiculo === 'Otro' ? 'selected' : '' %>>Otro</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="numero_tarjeta">Propietario:</label>
+                        <input type="text" id="numero_tarjeta" name="numero_tarjeta" 
+                               value="<%= inspeccion.numero_tarjeta || '' %>" placeholder="Propietario">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="placa" class="required">Placa del vehículo:</label>
+                        <select name="placa" id="placa" required>
+                            <option value="">-- Seleccionar Placa --</option>
+                            <% 
+                            const placasPredeterminadas = ['ABC123', 'XYZ789', 'MNO456', 'QRS321', 'JKL987', 
+                                                          'TUV654', 'DEF147', 'GHI258', 'OPC369', 'MVC741'];
+                            
+                            placasPredeterminadas.forEach(placa => {
+                                const selected = inspeccion.placa === placa ? 'selected' : '';
+                            %>
+                            <option value="<%= placa %>" <%= selected %>><%= placa %></option>
+                            <% }); %>
+                            <option value="OTRO" <%= !placasPredeterminadas.includes(inspeccion.placa) && inspeccion.placa ? 'selected' : '' %>>OTRA PLACA...</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group" id="otraPlacaContainer" 
+                         style="display: <%= !placasPredeterminadas.includes(inspeccion.placa) && inspeccion.placa ? 'block' : 'none' %>;">
+                        <label for="otra_placa" class="required">Ingresar placa:</label>
+                        <input type="text" id="otra_placa" name="otra_placa" 
+                               value="<%= !placasPredeterminadas.includes(inspeccion.placa) && inspeccion.placa ? inspeccion.placa : '' %>" 
+                               placeholder="Ej: DEF456" style="text-transform: uppercase;">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="nombre_conductor" class="required">Nombre y apellidos del conductor:</label>
+                        <input type="text" id="nombre_conductor" name="nombre_conductor" 
+                               value="<%= inspeccion.nombre_conductor || '' %>" placeholder="Nombre completo" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="modelo">Modelo del vehículo:</label>
+                        <input type="text" id="modelo" name="modelo" 
+                               value="<%= inspeccion.modelo || '' %>" placeholder="Ej: 2020">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="fecha_revision">Fecha revisión técnico-mecánica:</label>
+                        <input type="date" id="fecha_revision" name="fecha_revision" 
+                               value="<%= inspeccion.fecha_revision ? new Date(inspeccion.fecha_revision).toISOString().split('T')[0] : '' %>">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="licencia_conductor">Número de la Licencia de conducción:</label>
+                        <input type="text" id="licencia_conductor" name="licencia_conductor" 
+                               value="<%= inspeccion.licencia_conductor || '' %>" placeholder="Número de licencia">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="fecha_vencimiento_soat">Fecha de vencimiento del SOAT:</label>
+                        <input type="date" id="fecha_vencimiento_soat" name="fecha_vencimiento_soat" 
+                               value="<%= inspeccion.fecha_vencimiento_soat ? new Date(inspeccion.fecha_vencimiento_soat).toISOString().split('T')[0] : '' %>">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="fecha_cambio_aceite">Fecha último cambio de aceite:</label>
+                        <input type="date" id="fecha_cambio_aceite" name="fecha_cambio_aceite" 
+                               value="<%= inspeccion.fecha_cambio_aceite ? new Date(inspeccion.fecha_cambio_aceite).toISOString().split('T')[0] : '' %>">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="fecha_mantenimiento">Fecha mantenimiento preventivo (taller):</label>
+                        <input type="text" id="fecha_mantenimiento" name="fecha_mantenimiento" 
+                               value="<%= inspeccion.fecha_mantenimiento || '' %>" placeholder="Fecha y nombre del taller">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="kilometraje">Kilometraje actual:</label>
+                        <input type="number" id="kilometraje" name="kilometraje" 
+                               value="<%= inspeccion.kilometraje || '' %>" placeholder="Km" min="0">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- =========================================== -->
+            <!-- SECCIÓN 2: PARTES DEFECTUOSAS (RESPONSIVE) -->
+            <!-- =========================================== -->
+            <div class="defectos-section">
+                <h3><i class="fas fa-exclamation-triangle"></i> PARTES DEFECTUOSAS DEL VEHÍCULO</h3>
+                <p>Seleccione las partes que presentan condiciones defectuosas:</p>
+                
+                <div class="vehiculo-diagrama">
+                    <div class="diagrama-icono">🚗</div>
+                    <p class="hidden-desktop">Toque las partes defectuosas</p>
+                    
+                    <div class="checkbox-grid">
+                        <div class="checkbox-item">
+                            <label>
+                                <input type="checkbox" name="defecto_frontal" <%= defectos.frontal %>>
+                                <i class="fas fa-car-front"></i> Delantero
+                            </label>
+                        </div>
+                        <div class="checkbox-item">
+                            <label>
+                                <input type="checkbox" name="defecto_trasero" <%= defectos.trasero %>>
+                                <i class="fas fa-car-rear"></i> Trasero
+                            </label>
+                        </div>
+                        <div class="checkbox-item">
+                            <label>
+                                <input type="checkbox" name="defecto_lateral_izq" <%= defectos.lateral_izq %>>
+                                <i class="fas fa-car-side"></i> Lateral Izq
+                            </label>
+                        </div>
+                        <div class="checkbox-item">
+                            <label>
+                                <input type="checkbox" name="defecto_lateral_der" <%= defectos.lateral_der %>>
+                                <i class="fas fa-car-side fa-flip-horizontal"></i> Lateral Der
+                            </label>
+                        </div>
+                        <div class="checkbox-item">
+                            <label>
+                                <input type="checkbox" name="defecto_techo" <%= defectos.techo %>>
+                                <i class="fas fa-car-burst"></i> Techo
+                            </label>
+                        </div>
+                        <div class="checkbox-item">
+                            <label>
+                                <input type="checkbox" name="defecto_interior" <%= defectos.interior %>>
+                                <i class="fas fa-chair"></i> Interior
+                            </label>
+                        </div>
+                        <div class="checkbox-item">
+                            <label>
+                                <input type="checkbox" name="defecto_motor" <%= defectos.motor %>>
+                                <i class="fas fa-engine"></i> Motor
+                            </label>
+                        </div>
+                        <div class="checkbox-item">
+                            <label>
+                                <input type="checkbox" name="defecto_chasis" <%= defectos.chasis %>>
+                                <i class="fas fa-gears"></i> Chasis
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="defecto-descripcion">
+                        <label for="descripcion_defecto">Descripción del defecto:</label>
+                        <textarea id="descripcion_defecto" name="descripcion_defecto" rows="3" 
+                                  placeholder="Describa detalladamente el defecto encontrado..."><%= inspeccion.descripcion_defecto || '' %></textarea>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- =========================================== -->
+            <!-- SECCIÓN 3: LISTA DE CHEQUEO COMPLETA (RESPONSIVE) -->
+            <!-- =========================================== -->
+            <div class="form-section">
+                <h2><i class="fas fa-clipboard-list"></i> LISTA DE CHEQUEO</h2>
+                
+                <div class="note">
+                    <strong><i class="fas fa-info-circle"></i> NOTA:</strong> Para cada item, seleccione: 
+                    <span style="color:#27ae60;">✅ BUEN ESTADO</span> | 
+                    <span style="color:#e74c3c;">❌ MAL ESTADO</span> | 
+                    <span style="color:#f39c12;">⏺️ N/A</span>
+                </div>
+                
+                <!-- NIVELES -->
+                <div class="chequeo-categoria">NIVELES</div>
+                
+                <div class="chequeo-item">
+                    <label>Líquido refrigerante de radiador</label>
+                    <div class="radio-group-responsive">
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="nivel_refrigerante_BUENO" name="nivel_refrigerante" value="BUENO" 
+                                   <%= inspeccion.nivel_refrigerante === 'BUENO' ? 'checked' : '' %> required>
+                            <label for="nivel_refrigerante_BUENO" class="bueno">✅ Bueno</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="nivel_refrigerante_MALO" name="nivel_refrigerante" value="MALO"
+                                   <%= inspeccion.nivel_refrigerante === 'MALO' ? 'checked' : '' %>>
+                            <label for="nivel_refrigerante_MALO" class="malo">❌ Malo</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="nivel_refrigerante_NA" name="nivel_refrigerante" value="NA"
+                                   <%= inspeccion.nivel_refrigerante === 'NA' ? 'checked' : '' %>>
+                            <label for="nivel_refrigerante_NA" class="na">⏺️ N/A</label>
+                        </div>
+                    </div>
+                    <div class="obs-input">
+                        <textarea name="obs_nivel_refrigerante" placeholder="Observaciones..."><%= inspeccion.obs_nivel_refrigerante || '' %></textarea>
+                    </div>
+                </div>
+                
+                <div class="chequeo-item">
+                    <label>Líquido de frenos</label>
+                    <div class="radio-group-responsive">
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="nivel_frenos_BUENO" name="nivel_frenos" value="BUENO" 
+                                   <%= inspeccion.nivel_frenos === 'BUENO' ? 'checked' : '' %> required>
+                            <label for="nivel_frenos_BUENO" class="bueno">✅ Bueno</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="nivel_frenos_MALO" name="nivel_frenos" value="MALO"
+                                   <%= inspeccion.nivel_frenos === 'MALO' ? 'checked' : '' %>>
+                            <label for="nivel_frenos_MALO" class="malo">❌ Malo</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="nivel_frenos_NA" name="nivel_frenos" value="NA"
+                                   <%= inspeccion.nivel_frenos === 'NA' ? 'checked' : '' %>>
+                            <label for="nivel_frenos_NA" class="na">⏺️ N/A</label>
+                        </div>
+                    </div>
+                    <div class="obs-input">
+                        <textarea name="obs_nivel_frenos" placeholder="Observaciones..."><%= inspeccion.obs_nivel_frenos || '' %></textarea>
+                    </div>
+                </div>
+                
+                <div class="chequeo-item">
+                    <label>Aceite motor</label>
+                    <div class="radio-group-responsive">
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="nivel_aceite_BUENO" name="nivel_aceite" value="BUENO" 
+                                   <%= inspeccion.nivel_aceite === 'BUENO' ? 'checked' : '' %> required>
+                            <label for="nivel_aceite_BUENO" class="bueno">✅ Bueno</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="nivel_aceite_MALO" name="nivel_aceite" value="MALO"
+                                   <%= inspeccion.nivel_aceite === 'MALO' ? 'checked' : '' %>>
+                            <label for="nivel_aceite_MALO" class="malo">❌ Malo</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="nivel_aceite_NA" name="nivel_aceite" value="NA"
+                                   <%= inspeccion.nivel_aceite === 'NA' ? 'checked' : '' %>>
+                            <label for="nivel_aceite_NA" class="na">⏺️ N/A</label>
+                        </div>
+                    </div>
+                    <div class="obs-input">
+                        <textarea name="obs_nivel_aceite" placeholder="Observaciones..."><%= inspeccion.obs_nivel_aceite || '' %></textarea>
+                    </div>
+                </div>
+                
+                <div class="chequeo-item">
+                    <label>Nivel líquido hidráulico</label>
+                    <div class="radio-group-responsive">
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="nivel_hidraulico_BUENO" name="nivel_hidraulico" value="BUENO" 
+                                   <%= inspeccion.nivel_hidraulico === 'BUENO' ? 'checked' : '' %> required>
+                            <label for="nivel_hidraulico_BUENO" class="bueno">✅ Bueno</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="nivel_hidraulico_MALO" name="nivel_hidraulico" value="MALO"
+                                   <%= inspeccion.nivel_hidraulico === 'MALO' ? 'checked' : '' %>>
+                            <label for="nivel_hidraulico_MALO" class="malo">❌ Malo</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="nivel_hidraulico_NA" name="nivel_hidraulico" value="NA"
+                                   <%= inspeccion.nivel_hidraulico === 'NA' ? 'checked' : '' %>>
+                            <label for="nivel_hidraulico_NA" class="na">⏺️ N/A</label>
+                        </div>
+                    </div>
+                    <div class="obs-input">
+                        <textarea name="obs_nivel_hidraulico" placeholder="Observaciones..."><%= inspeccion.obs_nivel_hidraulico || '' %></textarea>
+                    </div>
+                </div>
+                
+                <div class="chequeo-item">
+                    <label>Agua de limpiavidrios</label>
+                    <div class="radio-group-responsive">
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="nivel_agua_BUENO" name="nivel_agua" value="BUENO" 
+                                   <%= inspeccion.nivel_agua === 'BUENO' ? 'checked' : '' %> required>
+                            <label for="nivel_agua_BUENO" class="bueno">✅ Bueno</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="nivel_agua_MALO" name="nivel_agua" value="MALO"
+                                   <%= inspeccion.nivel_agua === 'MALO' ? 'checked' : '' %>>
+                            <label for="nivel_agua_MALO" class="malo">❌ Malo</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="nivel_agua_NA" name="nivel_agua" value="NA"
+                                   <%= inspeccion.nivel_agua === 'NA' ? 'checked' : '' %>>
+                            <label for="nivel_agua_NA" class="na">⏺️ N/A</label>
+                        </div>
+                    </div>
+                    <div class="obs-input">
+                        <textarea name="obs_nivel_agua" placeholder="Observaciones..."><%= inspeccion.obs_nivel_agua || '' %></textarea>
+                    </div>
+                </div>
+                
+                <!-- PEDALES -->
+                <div class="chequeo-categoria">PEDALES</div>
+                
+                <div class="chequeo-item">
+                    <label>Acelerador (Uniformidad)</label>
+                    <div class="radio-group-responsive">
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="pedal_acelerador_BUENO" name="pedal_acelerador" value="BUENO" 
+                                   <%= inspeccion.pedal_acelerador === 'BUENO' ? 'checked' : '' %> required>
+                            <label for="pedal_acelerador_BUENO" class="bueno">✅ Bueno</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="pedal_acelerador_MALO" name="pedal_acelerador" value="MALO"
+                                   <%= inspeccion.pedal_acelerador === 'MALO' ? 'checked' : '' %>>
+                            <label for="pedal_acelerador_MALO" class="malo">❌ Malo</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="pedal_acelerador_NA" name="pedal_acelerador" value="NA"
+                                   <%= inspeccion.pedal_acelerador === 'NA' ? 'checked' : '' %>>
+                            <label for="pedal_acelerador_NA" class="na">⏺️ N/A</label>
+                        </div>
+                    </div>
+                    <div class="obs-input">
+                        <textarea name="obs_pedal_acelerador" placeholder="Observaciones..."><%= inspeccion.obs_pedal_acelerador || '' %></textarea>
+                    </div>
+                </div>
+                
+                <div class="chequeo-item">
+                    <label>Clutch (Cloche o embrague)</label>
+                    <div class="radio-group-responsive">
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="pedal_clutch_BUENO" name="pedal_clutch" value="BUENO" 
+                                   <%= inspeccion.pedal_clutch === 'BUENO' ? 'checked' : '' %> required>
+                            <label for="pedal_clutch_BUENO" class="bueno">✅ Bueno</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="pedal_clutch_MALO" name="pedal_clutch" value="MALO"
+                                   <%= inspeccion.pedal_clutch === 'MALO' ? 'checked' : '' %>>
+                            <label for="pedal_clutch_MALO" class="malo">❌ Malo</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="pedal_clutch_NA" name="pedal_clutch" value="NA"
+                                   <%= inspeccion.pedal_clutch === 'NA' ? 'checked' : '' %>>
+                            <label for="pedal_clutch_NA" class="na">⏺️ N/A</label>
+                        </div>
+                    </div>
+                    <div class="obs-input">
+                        <textarea name="obs_pedal_clutch" placeholder="Observaciones..."><%= inspeccion.obs_pedal_clutch || '' %></textarea>
+                    </div>
+                </div>
+                
+                <div class="chequeo-item">
+                    <label>Freno (Agarre)</label>
+                    <div class="radio-group-responsive">
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="pedal_freno_BUENO" name="pedal_freno" value="BUENO" 
+                                   <%= inspeccion.pedal_freno === 'BUENO' ? 'checked' : '' %> required>
+                            <label for="pedal_freno_BUENO" class="bueno">✅ Bueno</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="pedal_freno_MALO" name="pedal_freno" value="MALO"
+                                   <%= inspeccion.pedal_freno === 'MALO' ? 'checked' : '' %>>
+                            <label for="pedal_freno_MALO" class="malo">❌ Malo</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="pedal_freno_NA" name="pedal_freno" value="NA"
+                                   <%= inspeccion.pedal_freno === 'NA' ? 'checked' : '' %>>
+                            <label for="pedal_freno_NA" class="na">⏺️ N/A</label>
+                        </div>
+                    </div>
+                    <div class="obs-input">
+                        <textarea name="obs_pedal_freno" placeholder="Observaciones..."><%= inspeccion.obs_pedal_freno || '' %></textarea>
+                    </div>
+                </div>
+                
+                <!-- LUCES -->
+                <div class="chequeo-categoria">LUCES</div>
+                
+                <div class="chequeo-item">
+                    <label>Luces (Altas, medias, bajas)</label>
+                    <div class="radio-group-responsive">
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="luz_principales_BUENO" name="luz_principales" value="BUENO" 
+                                   <%= inspeccion.luz_principales === 'BUENO' ? 'checked' : '' %> required>
+                            <label for="luz_principales_BUENO" class="bueno">✅ Bueno</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="luz_principales_MALO" name="luz_principales" value="MALO"
+                                   <%= inspeccion.luz_principales === 'MALO' ? 'checked' : '' %>>
+                            <label for="luz_principales_MALO" class="malo">❌ Malo</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="luz_principales_NA" name="luz_principales" value="NA"
+                                   <%= inspeccion.luz_principales === 'NA' ? 'checked' : '' %>>
+                            <label for="luz_principales_NA" class="na">⏺️ N/A</label>
+                        </div>
+                    </div>
+                    <div class="obs-input">
+                        <textarea name="obs_luz_principales" placeholder="Observaciones..."><%= inspeccion.obs_luz_principales || '' %></textarea>
+                    </div>
+                </div>
+                
+                <div class="chequeo-item">
+                    <label>Direccionales</label>
+                    <div class="radio-group-responsive">
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="luz_direccionales_BUENO" name="luz_direccionales" value="BUENO" 
+                                   <%= inspeccion.luz_direccionales === 'BUENO' ? 'checked' : '' %> required>
+                            <label for="luz_direccionales_BUENO" class="bueno">✅ Bueno</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="luz_direccionales_MALO" name="luz_direccionales" value="MALO"
+                                   <%= inspeccion.luz_direccionales === 'MALO' ? 'checked' : '' %>>
+                            <label for="luz_direccionales_MALO" class="malo">❌ Malo</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="luz_direccionales_NA" name="luz_direccionales" value="NA"
+                                   <%= inspeccion.luz_direccionales === 'NA' ? 'checked' : '' %>>
+                            <label for="luz_direccionales_NA" class="na">⏺️ N/A</label>
+                        </div>
+                    </div>
+                    <div class="obs-input">
+                        <textarea name="obs_luz_direccionales" placeholder="Observaciones..."><%= inspeccion.obs_luz_direccionales || '' %></textarea>
+                    </div>
+                </div>
+                
+                <!-- LUCES - CONTINUACIÓN (todos los campos igual) -->
+
+                                <!-- LUCES - CONTINUACIÓN -->
+                <div class="chequeo-item">
+                    <label>Estacionarias</label>
+                    <div class="radio-group-responsive">
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="luz_estacionarias_BUENO" name="luz_estacionarias" value="BUENO" 
+                                   <%= inspeccion.luz_estacionarias === 'BUENO' ? 'checked' : '' %> required>
+                            <label for="luz_estacionarias_BUENO" class="bueno">✅ Bueno</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="luz_estacionarias_MALO" name="luz_estacionarias" value="MALO"
+                                   <%= inspeccion.luz_estacionarias === 'MALO' ? 'checked' : '' %>>
+                            <label for="luz_estacionarias_MALO" class="malo">❌ Malo</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="luz_estacionarias_NA" name="luz_estacionarias" value="NA"
+                                   <%= inspeccion.luz_estacionarias === 'NA' ? 'checked' : '' %>>
+                            <label for="luz_estacionarias_NA" class="na">⏺️ N/A</label>
+                        </div>
+                    </div>
+                    <div class="obs-input">
+                        <textarea name="obs_luz_estacionarias" placeholder="Observaciones..."><%= inspeccion.obs_luz_estacionarias || '' %></textarea>
+                    </div>
+                </div>
+                
+                <div class="chequeo-item">
+                    <label>Stops (Frenos)</label>
+                    <div class="radio-group-responsive">
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="luz_stops_BUENO" name="luz_stops" value="BUENO" 
+                                   <%= inspeccion.luz_stops === 'BUENO' ? 'checked' : '' %> required>
+                            <label for="luz_stops_BUENO" class="bueno">✅ Bueno</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="luz_stops_MALO" name="luz_stops" value="MALO"
+                                   <%= inspeccion.luz_stops === 'MALO' ? 'checked' : '' %>>
+                            <label for="luz_stops_MALO" class="malo">❌ Malo</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="luz_stops_NA" name="luz_stops" value="NA"
+                                   <%= inspeccion.luz_stops === 'NA' ? 'checked' : '' %>>
+                            <label for="luz_stops_NA" class="na">⏺️ N/A</label>
+                        </div>
+                    </div>
+                    <div class="obs-input">
+                        <textarea name="obs_luz_stops" placeholder="Observaciones..."><%= inspeccion.obs_luz_stops || '' %></textarea>
+                    </div>
+                </div>
+                
+                <div class="chequeo-item">
+                    <label>Testigos del tablero</label>
+                    <div class="radio-group-responsive">
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="luz_testigos_BUENO" name="luz_testigos" value="BUENO" 
+                                   <%= inspeccion.luz_testigos === 'BUENO' ? 'checked' : '' %> required>
+                            <label for="luz_testigos_BUENO" class="bueno">✅ Bueno</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="luz_testigos_MALO" name="luz_testigos" value="MALO"
+                                   <%= inspeccion.luz_testigos === 'MALO' ? 'checked' : '' %>>
+                            <label for="luz_testigos_MALO" class="malo">❌ Malo</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="luz_testigos_NA" name="luz_testigos" value="NA"
+                                   <%= inspeccion.luz_testigos === 'NA' ? 'checked' : '' %>>
+                            <label for="luz_testigos_NA" class="na">⏺️ N/A</label>
+                        </div>
+                    </div>
+                    <div class="obs-input">
+                        <textarea name="obs_luz_testigos" placeholder="Observaciones..."><%= inspeccion.obs_luz_testigos || '' %></textarea>
+                    </div>
+                </div>
+                
+                <div class="chequeo-item">
+                    <label>Luz de reversa</label>
+                    <div class="radio-group-responsive">
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="luz_reversa_BUENO" name="luz_reversa" value="BUENO" 
+                                   <%= inspeccion.luz_reversa === 'BUENO' ? 'checked' : '' %> required>
+                            <label for="luz_reversa_BUENO" class="bueno">✅ Bueno</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="luz_reversa_MALO" name="luz_reversa" value="MALO"
+                                   <%= inspeccion.luz_reversa === 'MALO' ? 'checked' : '' %>>
+                            <label for="luz_reversa_MALO" class="malo">❌ Malo</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="luz_reversa_NA" name="luz_reversa" value="NA"
+                                   <%= inspeccion.luz_reversa === 'NA' ? 'checked' : '' %>>
+                            <label for="luz_reversa_NA" class="na">⏺️ N/A</label>
+                        </div>
+                    </div>
+                    <div class="obs-input">
+                        <textarea name="obs_luz_reversa" placeholder="Observaciones..."><%= inspeccion.obs_luz_reversa || '' %></textarea>
+                    </div>
+                </div>
+                
+                <div class="chequeo-item">
+                    <label>Luces internas</label>
+                    <div class="radio-group-responsive">
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="luz_internas_BUENO" name="luz_internas" value="BUENO" 
+                                   <%= inspeccion.luz_internas === 'BUENO' ? 'checked' : '' %> required>
+                            <label for="luz_internas_BUENO" class="bueno">✅ Bueno</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="luz_internas_MALO" name="luz_internas" value="MALO"
+                                   <%= inspeccion.luz_internas === 'MALO' ? 'checked' : '' %>>
+                            <label for="luz_internas_MALO" class="malo">❌ Malo</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="luz_internas_NA" name="luz_internas" value="NA"
+                                   <%= inspeccion.luz_internas === 'NA' ? 'checked' : '' %>>
+                            <label for="luz_internas_NA" class="na">⏺️ N/A</label>
+                        </div>
+                    </div>
+                    <div class="obs-input">
+                        <textarea name="obs_luz_internas" placeholder="Observaciones..."><%= inspeccion.obs_luz_internas || '' %></textarea>
+                    </div>
+                </div>
+
+                <!-- Necesitarías hacer lo mismo para todos los campos de la base de datos -->
+                <!-- Por ejemplo para luz_estacionarias, luz_stops, etc. -->
+                
+                <!-- Por brevedad, aquí solo muestro algunos ejemplos -->
+                <!-- Deberías repetir este patrón para TODOS los campos radio -->
+                
+                                <!-- EQUIPO DE CARRETERA Y BOTIQUÍN -->
+                <div class="chequeo-categoria">EQUIPO DE CARRETERA Y BOTIQUÍN</div>
+                
+                <div class="chequeo-item">
+                    <label>Extintor (BC - ABC)</label>
+                    <div class="radio-group-responsive">
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="equipo_extintor_BUENO" name="equipo_extintor" value="BUENO" 
+                                   <%= inspeccion.equipo_extintor === 'BUENO' ? 'checked' : '' %> required>
+                            <label for="equipo_extintor_BUENO" class="bueno">✅ Bueno</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="equipo_extintor_MALO" name="equipo_extintor" value="MALO"
+                                   <%= inspeccion.equipo_extintor === 'MALO' ? 'checked' : '' %>>
+                            <label for="equipo_extintor_MALO" class="malo">❌ Malo</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="equipo_extintor_NA" name="equipo_extintor" value="NA"
+                                   <%= inspeccion.equipo_extintor === 'NA' ? 'checked' : '' %>>
+                            <label for="equipo_extintor_NA" class="na">⏺️ N/A</label>
+                        </div>
+                    </div>
+                    <div class="obs-input">
+                        <textarea name="obs_equipo_extintor" placeholder="Observaciones..."><%= inspeccion.obs_equipo_extintor || '' %></textarea>
+                    </div>
+                </div>
+                
+                <div class="chequeo-item">
+                    <label>Fecha de vencimiento del extintor</label>
+                    <div class="radio-group-responsive">
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="equipo_fecha_extintor_BUENO" name="equipo_fecha_extintor" value="BUENO" 
+                                   <%= inspeccion.equipo_fecha_extintor === 'BUENO' ? 'checked' : '' %> required>
+                            <label for="equipo_fecha_extintor_BUENO" class="bueno">✅ Bueno</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="equipo_fecha_extintor_MALO" name="equipo_fecha_extintor" value="MALO"
+                                   <%= inspeccion.equipo_fecha_extintor === 'MALO' ? 'checked' : '' %>>
+                            <label for="equipo_fecha_extintor_MALO" class="malo">❌ Malo</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="equipo_fecha_extintor_NA" name="equipo_fecha_extintor" value="NA"
+                                   <%= inspeccion.equipo_fecha_extintor === 'NA' ? 'checked' : '' %>>
+                            <label for="equipo_fecha_extintor_NA" class="na">⏺️ N/A</label>
+                        </div>
+                    </div>
+                    <div class="obs-input">
+                        <textarea name="obs_equipo_fecha_extintor" placeholder="Observaciones..."><%= inspeccion.obs_equipo_fecha_extintor || '' %></textarea>
+                    </div>
+                </div>
+                
+                <div class="chequeo-item">
+                    <label>Llanta de repuesto (2 mm de profundidad y aire)</label>
+                    <div class="radio-group-responsive">
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="equipo_llanta_BUENO" name="equipo_llanta" value="BUENO" 
+                                   <%= inspeccion.equipo_llanta === 'BUENO' ? 'checked' : '' %> required>
+                            <label for="equipo_llanta_BUENO" class="bueno">✅ Bueno</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="equipo_llanta_MALO" name="equipo_llanta" value="MALO"
+                                   <%= inspeccion.equipo_llanta === 'MALO' ? 'checked' : '' %>>
+                            <label for="equipo_llanta_MALO" class="malo">❌ Malo</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="equipo_llanta_NA" name="equipo_llanta" value="NA"
+                                   <%= inspeccion.equipo_llanta === 'NA' ? 'checked' : '' %>>
+                            <label for="equipo_llanta_NA" class="na">⏺️ N/A</label>
+                        </div>
+                    </div>
+                    <div class="obs-input">
+                        <textarea name="obs_equipo_llanta" placeholder="Observaciones..."><%= inspeccion.obs_equipo_llanta || '' %></textarea>
+                    </div>
+                </div>
+                
+                <div class="chequeo-item">
+                    <label>Cruceta acorde a los pernos</label>
+                    <div class="radio-group-responsive">
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="equipo_cruceta_BUENO" name="equipo_cruceta" value="BUENO" 
+                                   <%= inspeccion.equipo_cruceta === 'BUENO' ? 'checked' : '' %> required>
+                            <label for="equipo_cruceta_BUENO" class="bueno">✅ Bueno</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="equipo_cruceta_MALO" name="equipo_cruceta" value="MALO"
+                                   <%= inspeccion.equipo_cruceta === 'MALO' ? 'checked' : '' %>>
+                            <label for="equipo_cruceta_MALO" class="malo">❌ Malo</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="equipo_cruceta_NA" name="equipo_cruceta" value="NA"
+                                   <%= inspeccion.equipo_cruceta === 'NA' ? 'checked' : '' %>>
+                            <label for="equipo_cruceta_NA" class="na">⏺️ N/A</label>
+                        </div>
+                    </div>
+                    <div class="obs-input">
+                        <textarea name="obs_equipo_cruceta" placeholder="Observaciones..."><%= inspeccion.obs_equipo_cruceta || '' %></textarea>
+                    </div>
+                </div>
+                
+                <div class="chequeo-item">
+                    <label>2 señales reflectivas en triángulo</label>
+                    <div class="radio-group-responsive">
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="equipo_senales_BUENO" name="equipo_senales" value="BUENO" 
+                                   <%= inspeccion.equipo_senales === 'BUENO' ? 'checked' : '' %> required>
+                            <label for="equipo_senales_BUENO" class="bueno">✅ Bueno</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="equipo_senales_MALO" name="equipo_senales" value="MALO"
+                                   <%= inspeccion.equipo_senales === 'MALO' ? 'checked' : '' %>>
+                            <label for="equipo_senales_MALO" class="malo">❌ Malo</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="equipo_senales_NA" name="equipo_senales" value="NA"
+                                   <%= inspeccion.equipo_senales === 'NA' ? 'checked' : '' %>>
+                            <label for="equipo_senales_NA" class="na">⏺️ N/A</label>
+                        </div>
+                    </div>
+                    <div class="obs-input">
+                        <textarea name="obs_equipo_senales" placeholder="Observaciones..."><%= inspeccion.obs_equipo_senales || '' %></textarea>
+                    </div>
+                </div>
+                
+                <div class="chequeo-item">
+                    <label>2 tacos</label>
+                    <div class="radio-group-responsive">
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="equipo_tacos_BUENO" name="equipo_tacos" value="BUENO" 
+                                   <%= inspeccion.equipo_tacos === 'BUENO' ? 'checked' : '' %> required>
+                            <label for="equipo_tacos_BUENO" class="bueno">✅ Bueno</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="equipo_tacos_MALO" name="equipo_tacos" value="MALO"
+                                   <%= inspeccion.equipo_tacos === 'MALO' ? 'checked' : '' %>>
+                            <label for="equipo_tacos_MALO" class="malo">❌ Malo</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="equipo_tacos_NA" name="equipo_tacos" value="NA"
+                                   <%= inspeccion.equipo_tacos === 'NA' ? 'checked' : '' %>>
+                            <label for="equipo_tacos_NA" class="na">⏺️ N/A</label>
+                        </div>
+                    </div>
+                    <div class="obs-input">
+                        <textarea name="obs_equipo_tacos" placeholder="Observaciones..."><%= inspeccion.obs_equipo_tacos || '' %></textarea>
+                    </div>
+                </div>
+                
+                <div class="chequeo-item">
+                    <label>Caja de herramientas (alicate, destornilladores, llaves)</label>
+                    <div class="radio-group-responsive">
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="equipo_herramientas_BUENO" name="equipo_herramientas" value="BUENO" 
+                                   <%= inspeccion.equipo_herramientas === 'BUENO' ? 'checked' : '' %> required>
+                            <label for="equipo_herramientas_BUENO" class="bueno">✅ Bueno</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="equipo_herramientas_MALO" name="equipo_herramientas" value="MALO"
+                                   <%= inspeccion.equipo_herramientas === 'MALO' ? 'checked' : '' %>>
+                            <label for="equipo_herramientas_MALO" class="malo">❌ Malo</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="equipo_herramientas_NA" name="equipo_herramientas" value="NA"
+                                   <%= inspeccion.equipo_herramientas === 'NA' ? 'checked' : '' %>>
+                            <label for="equipo_herramientas_NA" class="na">⏺️ N/A</label>
+                        </div>
+                    </div>
+                    <div class="obs-input">
+                        <textarea name="obs_equipo_herramientas" placeholder="Observaciones..."><%= inspeccion.obs_equipo_herramientas || '' %></textarea>
+                    </div>
+                </div>
+                
+                <div class="chequeo-item">
+                    <label>Linterna</label>
+                    <div class="radio-group-responsive">
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="equipo_linterna_BUENO" name="equipo_linterna" value="BUENO" 
+                                   <%= inspeccion.equipo_linterna === 'BUENO' ? 'checked' : '' %> required>
+                            <label for="equipo_linterna_BUENO" class="bueno">✅ Bueno</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="equipo_linterna_MALO" name="equipo_linterna" value="MALO"
+                                   <%= inspeccion.equipo_linterna === 'MALO' ? 'checked' : '' %>>
+                            <label for="equipo_linterna_MALO" class="malo">❌ Malo</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="equipo_linterna_NA" name="equipo_linterna" value="NA"
+                                   <%= inspeccion.equipo_linterna === 'NA' ? 'checked' : '' %>>
+                            <label for="equipo_linterna_NA" class="na">⏺️ N/A</label>
+                        </div>
+                    </div>
+                    <div class="obs-input">
+                        <textarea name="obs_equipo_linterna" placeholder="Observaciones..."><%= inspeccion.obs_equipo_linterna || '' %></textarea>
+                    </div>
+                </div>
+                
+                <div class="chequeo-item">
+                    <label>Gato</label>
+                    <div class="radio-group-responsive">
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="equipo_gato_BUENO" name="equipo_gato" value="BUENO" 
+                                   <%= inspeccion.equipo_gato === 'BUENO' ? 'checked' : '' %> required>
+                            <label for="equipo_gato_BUENO" class="bueno">✅ Bueno</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="equipo_gato_MALO" name="equipo_gato" value="MALO"
+                                   <%= inspeccion.equipo_gato === 'MALO' ? 'checked' : '' %>>
+                            <label for="equipo_gato_MALO" class="malo">❌ Malo</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="equipo_gato_NA" name="equipo_gato" value="NA"
+                                   <%= inspeccion.equipo_gato === 'NA' ? 'checked' : '' %>>
+                            <label for="equipo_gato_NA" class="na">⏺️ N/A</label>
+                        </div>
+                    </div>
+                    <div class="obs-input">
+                        <textarea name="obs_equipo_gato" placeholder="Observaciones..."><%= inspeccion.obs_equipo_gato || '' %></textarea>
+                    </div>
+                </div>
+                
+                <div class="chequeo-item">
+                    <label>Botiquín primeros auxilios completo</label>
+                    <div class="radio-group-responsive">
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="equipo_botiquin_BUENO" name="equipo_botiquin" value="BUENO" 
+                                   <%= inspeccion.equipo_botiquin === 'BUENO' ? 'checked' : '' %> required>
+                            <label for="equipo_botiquin_BUENO" class="bueno">✅ Bueno</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="equipo_botiquin_MALO" name="equipo_botiquin" value="MALO"
+                                   <%= inspeccion.equipo_botiquin === 'MALO' ? 'checked' : '' %>>
+                            <label for="equipo_botiquin_MALO" class="malo">❌ Malo</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="equipo_botiquin_NA" name="equipo_botiquin" value="NA"
+                                   <%= inspeccion.equipo_botiquin === 'NA' ? 'checked' : '' %>>
+                            <label for="equipo_botiquin_NA" class="na">⏺️ N/A</label>
+                        </div>
+                    </div>
+                    <div class="obs-input">
+                        <textarea name="obs_equipo_botiquin" placeholder="Observaciones..."><%= inspeccion.obs_equipo_botiquin || '' %></textarea>
+                    </div>
+                </div>
+
+                                <!-- VARIOS -->
+                <div class="chequeo-categoria">VARIOS</div>
+                
+                <div class="chequeo-item">
+                    <label>Llantas (Labrado 2 mm y aire)</label>
+                    <div class="radio-group-responsive">
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="varios_llantas_BUENO" name="varios_llantas" value="BUENO" 
+                                   <%= inspeccion.varios_llantas === 'BUENO' ? 'checked' : '' %> required>
+                            <label for="varios_llantas_BUENO" class="bueno">✅ Bueno</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="varios_llantas_MALO" name="varios_llantas" value="MALO"
+                                   <%= inspeccion.varios_llantas === 'MALO' ? 'checked' : '' %>>
+                            <label for="varios_llantas_MALO" class="malo">❌ Malo</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="varios_llantas_NA" name="varios_llantas" value="NA"
+                                   <%= inspeccion.varios_llantas === 'NA' ? 'checked' : '' %>>
+                            <label for="varios_llantas_NA" class="na">⏺️ N/A</label>
+                        </div>
+                    </div>
+                    <div class="obs-input">
+                        <textarea name="obs_varios_llantas" placeholder="Observaciones..."><%= inspeccion.obs_varios_llantas || '' %></textarea>
+                    </div>
+                </div>
+                
+                <div class="chequeo-item">
+                    <label>Batería (Borner, sin corrosión)</label>
+                    <div class="radio-group-responsive">
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="varios_bateria_BUENO" name="varios_bateria" value="BUENO" 
+                                   <%= inspeccion.varios_bateria === 'BUENO' ? 'checked' : '' %> required>
+                            <label for="varios_bateria_BUENO" class="bueno">✅ Bueno</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="varios_bateria_MALO" name="varios_bateria" value="MALO"
+                                   <%= inspeccion.varios_bateria === 'MALO' ? 'checked' : '' %>>
+                            <label for="varios_bateria_MALO" class="malo">❌ Malo</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="varios_bateria_NA" name="varios_bateria" value="NA"
+                                   <%= inspeccion.varios_bateria === 'NA' ? 'checked' : '' %>>
+                            <label for="varios_bateria_NA" class="na">⏺️ N/A</label>
+                        </div>
+                    </div>
+                    <div class="obs-input">
+                        <textarea name="obs_varios_bateria" placeholder="Observaciones..."><%= inspeccion.obs_varios_bateria || '' %></textarea>
+                    </div>
+                </div>
+                
+                <div class="chequeo-item">
+                    <label>Rines (sin golpes/fisuras)</label>
+                    <div class="radio-group-responsive">
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="varios_rines_BUENO" name="varios_rines" value="BUENO" 
+                                   <%= inspeccion.varios_rines === 'BUENO' ? 'checked' : '' %> required>
+                            <label for="varios_rines_BUENO" class="bueno">✅ Bueno</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="varios_rines_MALO" name="varios_rines" value="MALO"
+                                   <%= inspeccion.varios_rines === 'MALO' ? 'checked' : '' %>>
+                            <label for="varios_rines_MALO" class="malo">❌ Malo</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="varios_rines_NA" name="varios_rines" value="NA"
+                                   <%= inspeccion.varios_rines === 'NA' ? 'checked' : '' %>>
+                            <label for="varios_rines_NA" class="na">⏺️ N/A</label>
+                        </div>
+                    </div>
+                    <div class="obs-input">
+                        <textarea name="obs_varios_rines" placeholder="Observaciones..."><%= inspeccion.obs_varios_rines || '' %></textarea>
+                    </div>
+                </div>
+                
+                <div class="chequeo-item">
+                    <label>Cinturón de seguridad en todos los puestos</label>
+                    <div class="radio-group-responsive">
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="varios_cinturones_BUENO" name="varios_cinturones" value="BUENO" 
+                                   <%= inspeccion.varios_cinturones === 'BUENO' ? 'checked' : '' %> required>
+                            <label for="varios_cinturones_BUENO" class="bueno">✅ Bueno</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="varios_cinturones_MALO" name="varios_cinturones" value="MALO"
+                                   <%= inspeccion.varios_cinturones === 'MALO' ? 'checked' : '' %>>
+                            <label for="varios_cinturones_MALO" class="malo">❌ Malo</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="varios_cinturones_NA" name="varios_cinturones" value="NA"
+                                   <%= inspeccion.varios_cinturones === 'NA' ? 'checked' : '' %>>
+                            <label for="varios_cinturones_NA" class="na">⏺️ N/A</label>
+                        </div>
+                    </div>
+                    <div class="obs-input">
+                        <textarea name="obs_varios_cinturones" placeholder="Observaciones..."><%= inspeccion.obs_varios_cinturones || '' %></textarea>
+                    </div>
+                </div>
+                
+                <div class="chequeo-item">
+                    <label>Pito reversa (Vehículos operativos)</label>
+                    <div class="radio-group-responsive">
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="varios_pito_reversa_BUENO" name="varios_pito_reversa" value="BUENO" 
+                                   <%= inspeccion.varios_pito_reversa === 'BUENO' ? 'checked' : '' %> required>
+                            <label for="varios_pito_reversa_BUENO" class="bueno">✅ Bueno</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="varios_pito_reversa_MALO" name="varios_pito_reversa" value="MALO"
+                                   <%= inspeccion.varios_pito_reversa === 'MALO' ? 'checked' : '' %>>
+                            <label for="varios_pito_reversa_MALO" class="malo">❌ Malo</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="varios_pito_reversa_NA" name="varios_pito_reversa" value="NA"
+                                   <%= inspeccion.varios_pito_reversa === 'NA' ? 'checked' : '' %>>
+                            <label for="varios_pito_reversa_NA" class="na">⏺️ N/A</label>
+                        </div>
+                    </div>
+                    <div class="obs-input">
+                        <textarea name="obs_varios_pito_reversa" placeholder="Observaciones..."><%= inspeccion.obs_varios_pito_reversa || '' %></textarea>
+                    </div>
+                </div>
+                
+                <div class="chequeo-item">
+                    <label>Pito</label>
+                    <div class="radio-group-responsive">
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="varios_pito_BUENO" name="varios_pito" value="BUENO" 
+                                   <%= inspeccion.varios_pito === 'BUENO' ? 'checked' : '' %> required>
+                            <label for="varios_pito_BUENO" class="bueno">✅ Bueno</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="varios_pito_MALO" name="varios_pito" value="MALO"
+                                   <%= inspeccion.varios_pito === 'MALO' ? 'checked' : '' %>>
+                            <label for="varios_pito_MALO" class="malo">❌ Malo</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="varios_pito_NA" name="varios_pito" value="NA"
+                                   <%= inspeccion.varios_pito === 'NA' ? 'checked' : '' %>>
+                            <label for="varios_pito_NA" class="na">⏺️ N/A</label>
+                        </div>
+                    </div>
+                    <div class="obs-input">
+                        <textarea name="obs_varios_pito" placeholder="Observaciones..."><%= inspeccion.obs_varios_pito || '' %></textarea>
+                    </div>
+                </div>
+                
+                <div class="chequeo-item">
+                    <label>Freno de emergencia</label>
+                    <div class="radio-group-responsive">
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="varios_freno_emergencia_BUENO" name="varios_freno_emergencia" value="BUENO" 
+                                   <%= inspeccion.varios_freno_emergencia === 'BUENO' ? 'checked' : '' %> required>
+                            <label for="varios_freno_emergencia_BUENO" class="bueno">✅ Bueno</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="varios_freno_emergencia_MALO" name="varios_freno_emergencia" value="MALO"
+                                   <%= inspeccion.varios_freno_emergencia === 'MALO' ? 'checked' : '' %>>
+                            <label for="varios_freno_emergencia_MALO" class="malo">❌ Malo</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="varios_freno_emergencia_NA" name="varios_freno_emergencia" value="NA"
+                                   <%= inspeccion.varios_freno_emergencia === 'NA' ? 'checked' : '' %>>
+                            <label for="varios_freno_emergencia_NA" class="na">⏺️ N/A</label>
+                        </div>
+                    </div>
+                    <div class="obs-input">
+                        <textarea name="obs_varios_freno_emergencia" placeholder="Observaciones..."><%= inspeccion.obs_varios_freno_emergencia || '' %></textarea>
+                    </div>
+                </div>
+                
+                <div class="chequeo-item">
+                    <label>Espejos laterales y cabina (sin fisuras)</label>
+                    <div class="radio-group-responsive">
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="varios_espejos_BUENO" name="varios_espejos" value="BUENO" 
+                                   <%= inspeccion.varios_espejos === 'BUENO' ? 'checked' : '' %> required>
+                            <label for="varios_espejos_BUENO" class="bueno">✅ Bueno</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="varios_espejos_MALO" name="varios_espejos" value="MALO"
+                                   <%= inspeccion.varios_espejos === 'MALO' ? 'checked' : '' %>>
+                            <label for="varios_espejos_MALO" class="malo">❌ Malo</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="varios_espejos_NA" name="varios_espejos" value="NA"
+                                   <%= inspeccion.varios_espejos === 'NA' ? 'checked' : '' %>>
+                            <label for="varios_espejos_NA" class="na">⏺️ N/A</label>
+                        </div>
+                    </div>
+                    <div class="obs-input">
+                        <textarea name="obs_varios_espejos" placeholder="Observaciones..."><%= inspeccion.obs_varios_espejos || '' %></textarea>
+                    </div>
+                </div>
+                
+                <div class="chequeo-item">
+                    <label>Estado carcasa luces</label>
+                    <div class="radio-group-responsive">
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="varios_carcasa_BUENO" name="varios_carcasa" value="BUENO" 
+                                   <%= inspeccion.varios_carcasa === 'BUENO' ? 'checked' : '' %> required>
+                            <label for="varios_carcasa_BUENO" class="bueno">✅ Bueno</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="varios_carcasa_MALO" name="varios_carcasa" value="MALO"
+                                   <%= inspeccion.varios_carcasa === 'MALO' ? 'checked' : '' %>>
+                            <label for="varios_carcasa_MALO" class="malo">❌ Malo</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="varios_carcasa_NA" name="varios_carcasa" value="NA"
+                                   <%= inspeccion.varios_carcasa === 'NA' ? 'checked' : '' %>>
+                            <label for="varios_carcasa_NA" class="na">⏺️ N/A</label>
+                        </div>
+                    </div>
+                    <div class="obs-input">
+                        <textarea name="obs_varios_carcasa" placeholder="Observaciones..."><%= inspeccion.obs_varios_carcasa || '' %></textarea>
+                    </div>
+                </div>
+                
+                <div class="chequeo-item">
+                    <label>Plumillas/limpiabrisas (no dejan marcas)</label>
+                    <div class="radio-group-responsive">
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="varios_plumillas_BUENO" name="varios_plumillas" value="BUENO" 
+                                   <%= inspeccion.varios_plumillas === 'BUENO' ? 'checked' : '' %> required>
+                            <label for="varios_plumillas_BUENO" class="bueno">✅ Bueno</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="varios_plumillas_MALO" name="varios_plumillas" value="MALO"
+                                   <%= inspeccion.varios_plumillas === 'MALO' ? 'checked' : '' %>>
+                            <label for="varios_plumillas_MALO" class="malo">❌ Malo</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="varios_plumillas_NA" name="varios_plumillas" value="NA"
+                                   <%= inspeccion.varios_plumillas === 'NA' ? 'checked' : '' %>>
+                            <label for="varios_plumillas_NA" class="na">⏺️ N/A</label>
+                        </div>
+                    </div>
+                    <div class="obs-input">
+                        <textarea name="obs_varios_plumillas" placeholder="Observaciones..."><%= inspeccion.obs_varios_plumillas || '' %></textarea>
+                    </div>
+                </div>
+                
+                <div class="chequeo-item">
+                    <label>Tapizado</label>
+                    <div class="radio-group-responsive">
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="varios_tapizado_BUENO" name="varios_tapizado" value="BUENO" 
+                                   <%= inspeccion.varios_tapizado === 'BUENO' ? 'checked' : '' %> required>
+                            <label for="varios_tapizado_BUENO" class="bueno">✅ Bueno</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="varios_tapizado_MALO" name="varios_tapizado" value="MALO"
+                                   <%= inspeccion.varios_tapizado === 'MALO' ? 'checked' : '' %>>
+                            <label for="varios_tapizado_MALO" class="malo">❌ Malo</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="varios_tapizado_NA" name="varios_tapizado" value="NA"
+                                   <%= inspeccion.varios_tapizado === 'NA' ? 'checked' : '' %>>
+                            <label for="varios_tapizado_NA" class="na">⏺️ N/A</label>
+                        </div>
+                    </div>
+                    <div class="obs-input">
+                        <textarea name="obs_varios_tapizado" placeholder="Observaciones..."><%= inspeccion.obs_varios_tapizado || '' %></textarea>
+                    </div>
+                </div>
+                
+                <div class="chequeo-item">
+                    <label>Panorámico (sin fisuras)</label>
+                    <div class="radio-group-responsive">
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="varios_panoramico_BUENO" name="varios_panoramico" value="BUENO" 
+                                   <%= inspeccion.varios_panoramico === 'BUENO' ? 'checked' : '' %> required>
+                            <label for="varios_panoramico_BUENO" class="bueno">✅ Bueno</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="varios_panoramico_MALO" name="varios_panoramico" value="MALO"
+                                   <%= inspeccion.varios_panoramico === 'MALO' ? 'checked' : '' %>>
+                            <label for="varios_panoramico_MALO" class="malo">❌ Malo</label>
+                        </div>
+                        <div class="radio-option-responsive">
+                            <input type="radio" id="varios_panoramico_NA" name="varios_panoramico" value="NA"
+                                   <%= inspeccion.varios_panoramico === 'NA' ? 'checked' : '' %>>
+                            <label for="varios_panoramico_NA" class="na">⏺️ N/A</label>
+                        </div>
+                    </div>
+                    <div class="obs-input">
+                        <textarea name="obs_varios_panoramico" placeholder="Observaciones..."><%= inspeccion.obs_varios_panoramico || '' %></textarea>
+                    </div>
+                </div>
+            
+            <!-- =========================================== -->
+            <!-- SECCIÓN 5: DECLARACIÓN Y FIRMAS (RESPONSIVE) -->
+            <!-- =========================================== -->
+            <div class="form-section">
+                <h2><i class="fas fa-signature"></i> DECLARACIÓN Y FIRMAS</h2>
+                
+                <div class="note">
+                    <strong><i class="fas fa-exclamation-circle"></i> DECLARACIÓN:</strong> "A continuación constato que la información suministrada es certera y veraz. De encontrar condiciones inseguras o defectos en el vehículo se notificarán a Recursos Físicos, junto con Talento Humano."
+                </div>
+                
+                <div class="firmas-grid">
+                    <div class="firma-card">
+                        <h4><i class="fas fa-user"></i> INSPECTOR</h4>
+                        <div class="form-group">
+                            <label for="nombre_elabora" class="required">Nombre de quien elabora:</label>
+                            <input type="text" id="nombre_elabora" name="nombre_elabora" 
+                                   value="<%= inspeccion.nombre_elabora || '' %>" placeholder="Nombre completo del inspector" required>
+                        </div>
+                    </div>
+                    
+                    <div class="firma-card">
+                        <h4><i class="fas fa-id-card"></i> CONDUCTOR</h4>
+                        <div class="form-group">
+                            <label for="nombre_firma_conductor">Nombre y firma conductor:</label>
+                            <input type="text" id="nombre_firma_conductor" name="nombre_firma_conductor" 
+                                   value="<%= inspeccion.nombre_firma_conductor || '' %>" placeholder="Nombre del conductor">
+                        </div>
+                        <div class="form-group">
+                            <label for="cc_conductor">CC N°:</label>
+                            <input type="text" id="cc_conductor" name="cc_conductor" 
+                                   value="<%= inspeccion.cc_conductor || '' %>" placeholder="Documento">
+                        </div>
+                        <div class="checkbox-item">
+                            <label>
+                                <input type="checkbox" name="aceptacion_conductor" <%= aceptaciones.conductor %>>
+                                Declaro haber recibido el vehículo en las condiciones descritas
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="firma-card">
+                        <h4><i class="fas fa-user-tie"></i> COORDINADOR/SUPERVISOR</h4>
+                        <div class="form-group">
+                            <label for="firma_coordinador">Firma coordinador o supervisor:</label>
+                            <input type="text" id="firma_coordinador" name="firma_coordinador" 
+                                   value="<%= inspeccion.firma_coordinador || '' %>" placeholder="Nombre del coordinador">
+                        </div>
+                        <div class="form-group">
+                            <label for="cc_coordinador">CC N°:</label>
+                            <input type="text" id="cc_coordinador" name="cc_coordinador" 
+                                   value="<%= inspeccion.cc_coordinador || '' %>" placeholder="Documento">
+                        </div>
+                        <div class="checkbox-item">
+                            <label>
+                                <input type="checkbox" name="aceptacion_coordinador" <%= aceptaciones.coordinador %>>
+                                Verificado y aprobado
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="note">
+                    <strong><i class="fas fa-shield-alt"></i> NOTA LEGAL:</strong> En cumplimiento de la Ley 1581 de 2012 y el Decreto 1377 de 2013, le informamos que usted puede conocer la Política de Tratamiento de los Datos Personales a través del siguiente link: 
+                    <a href="http://portal.minvivienda.local/ProcesosCorporativos/GPT-L-01%20Lineamiento%20tratamiento%20datos%20personales%201.0.pdf" target="_blank" style="color: #3498db; text-decoration: underline;">
+                        Política de Tratamiento de Datos
+                    </a>
+                </div>
+            </div>
+            
+            <!-- =========================================== -->
+            <!-- BOTONES FINALES (RESPONSIVE) -->
+            <!-- =========================================== -->
+            <div class="buttons">
+                <div class="btn-group">
+                    <button type="submit" class="btn btn-submit" id="submitBtn">
+                        <i class="fas fa-save"></i> ACTUALIZAR INSPECCIÓN
+                    </button>
+                    <button type="reset" class="btn btn-back" id="resetBtn">
+                        <i class="fas fa-eraser"></i> RESTAURAR
+                    </button>
+                    <a href="/inspeccion/<%= inspeccion.id %>" class="btn btn-back">
+                        <i class="fas fa-times"></i> CANCELAR
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+    
+    <script>
+        // Toggle para placa manual
+        document.getElementById('placa').addEventListener('change', function() {
+            const otraPlacaContainer = document.getElementById('otraPlacaContainer');
+            if (this.value === 'OTRO') {
+                otraPlacaContainer.style.display = 'block';
+                document.getElementById('otra_placa').required = true;
+            } else {
+                otraPlacaContainer.style.display = 'none';
+                document.getElementById('otra_placa').required = false;
+            }
+        });
+        
+        // Convertir placa a mayúsculas
+        document.getElementById('otra_placa')?.addEventListener('input', function() {
+            this.value = this.value.toUpperCase();
+        });
+        
+        // Validación antes de enviar
+        document.getElementById('inspeccionForm').addEventListener('submit', function(e) {
+            const submitBtn = document.getElementById('submitBtn');
+            const fecha = document.getElementById('fecha_inspeccion').value;
+            const conductor = document.getElementById('nombre_conductor').value;
+            const inspector = document.getElementById('nombre_elabora').value;
+            
+            if (!fecha || !conductor || !inspector) {
+                alert('Por favor complete los campos obligatorios (*)');
+                e.preventDefault();
+                return false;
+            }
+            
+            // Mostrar loading
+            submitBtn.classList.add('loading');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner"></i> ACTUALIZANDO...';
+            
+            return true;
+        });
+        
+        // Limpiar formulario con confirmación
+        document.getElementById('resetBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            if (confirm('¿Está seguro de que desea restaurar los valores originales? Se perderán todos los cambios no guardados.')) {
+                // Recargar la página para restaurar valores originales
+                window.location.reload();
+            }
+        });
+        
+        // Mejorar experiencia táctil
+        document.querySelectorAll('.radio-option-responsive label').forEach(label => {
+            label.addEventListener('touchstart', function() {
+                this.style.transform = 'scale(0.95)';
+            });
+            
+            label.addEventListener('touchend', function() {
+                this.style.transform = 'scale(1)';
+            });
+        });
+        
+        // Auto-focus en primer campo
+        window.addEventListener('load', function() {
+            document.getElementById('fecha_inspeccion').focus();
+        });
+        
+        // Validar que la fecha de inspección no sea futura
+        const fechaInspeccion = document.getElementById('fecha_inspeccion');
+        if (fechaInspeccion) {
+            fechaInspeccion.max = new Date().toISOString().split('T')[0];
+            
+            fechaInspeccion.addEventListener('change', function() {
+                const selectedDate = new Date(this.value);
+                const today = new Date();
+                today.setHours(0,0,0,0);
+                
+                if (selectedDate > today) {
+                    alert('La fecha de inspección no puede ser futura');
+                    this.value = new Date().toISOString().split('T')[0];
+                }
+            });
+        }
+        
+        // Contador de items seleccionados
+        function updateSelectionCount() {
+            const radios = document.querySelectorAll('input[type="radio"]:checked');
+            const defectos = document.querySelectorAll('input[name^="defecto_"]:checked');
+            
+            // Crear o actualizar contador
+            let countDisplay = document.getElementById('selectionCount');
+            if (!countDisplay) {
+                const header = document.querySelector('.header');
+                countDisplay = document.createElement('div');
+                countDisplay.id = 'selectionCount';
+                countDisplay.style.cssText = `
+                    margin-top: 10px;
+                    padding: 8px 12px;
+                    background: rgba(255,255,255,0.2);
+                    border-radius: 4px;
+                    font-size: 14px;
+                    font-weight: bold;
+                `;
+                header.appendChild(countDisplay);
+            }
+            
+            countDisplay.textContent = `Items seleccionados: ${radios.length} | Defectos: ${defectos.length}`;
+        }
+        
+        // Actualizar contador cuando cambien los radios o checkboxes
+        document.addEventListener('change', function(e) {
+            if (e.target.matches('input[type="radio"], input[name^="defecto_"]')) {
+                updateSelectionCount();
+            }
+        });
+        
+        // Inicializar contador
+        setTimeout(updateSelectionCount, 100);
+    </script>
+</body>
+</html>

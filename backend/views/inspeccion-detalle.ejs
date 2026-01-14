@@ -263,7 +263,7 @@
     <div class="container">
         <div class="header">
             <h1><i class="fas fa-file-alt"></i> <%= title %></h1>
-            <p>Fecha de inspección: <%= fechaFormateada %></p>
+            <p>Fecha de inspección: <%= inspeccion.fecha_inspeccion ? new Date(inspeccion.fecha_inspeccion).toLocaleDateString('es-ES') : '' %></p>
             
             <div class="header-controls">
                 <div>
@@ -348,9 +348,7 @@
                     <h3><i class="fas fa-calendar-alt"></i> Fechas Importantes</h3>
                     <div class="info-row">
                         <span class="info-label">Inspección:</span>
-                        <span class="info-value"><%= fechaFormateada %></span>
-                    </div>
-                    <% if (inspeccion.fecha_revision) { %>
+<span class="info-value"><%= inspeccion.fecha_inspeccion ? new Date(inspeccion.fecha_inspeccion).toLocaleDateString('es-ES') : '' %></span>
                     <div class="info-row">
                         <span class="info-label">Revisión técnico-mecánica:</span>
                         <span class="info-value"><%= new Date(inspeccion.fecha_revision).toLocaleDateString('es-ES') %></span>
@@ -364,7 +362,7 @@
                     <% } %>
                     <div class="info-row">
                         <span class="info-label">Registro en sistema:</span>
-                        <span class="info-value"><%= fechaCreacionFormateada %></span>
+                        <span class="info-value"><%= inspeccion.fecha_creacion ? new Date(inspeccion.fecha_creacion).toLocaleDateString('es-ES') : '' %></span>
                     </div>
                     <div class="info-row">
                         <span class="info-label">Inspector:</span>
@@ -604,7 +602,7 @@
                         </div>
                         <div class="info-row">
                             <span class="info-label">Fecha de registro:</span>
-                            <span class="info-value"><%= fechaCreacionFormateada %></span>
+                            <span class="info-value"><%= inspeccion.fecha_creacion ? new Date(inspeccion.fecha_creacion).toLocaleDateString('es-ES') : '' %></span>
                         </div>
                         <div class="info-row">
                             <span class="info-label">Estado:</span>
